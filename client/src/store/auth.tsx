@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
-const initialStateValues = {
+const initialStateValues: any = {
   isLoggedIn: false,
   token: "",
   userId: "",
 };
 
-export const authStore = create()(
+export const authStore: any = create()(
   devtools(
     persist(
       (set) => ({
