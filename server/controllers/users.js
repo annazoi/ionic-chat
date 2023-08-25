@@ -3,16 +3,18 @@ const User = require("../model/User");
 const getUsers = async (req, res) => {
   try {
     const users = await User.find();
-    res.json(users);
+    if (!users) {
+      return res.status(404).json({ message: "No Users Found", users: null });
+    }
+    res.status(201).json({ message: "ok", users: users });
   } catch (err) {
-    res.json({ message: err });
+    res.status(404).json({ message: err, users: null });
   }
 };
 
 const getUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-
     if (!user) {
       return res.status(404).json({ message: "User Not Found", user: null });
     }

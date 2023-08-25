@@ -52,6 +52,12 @@ const Register: React.FC = () => {
 
   const handleImage = (avatar: string) => {
     setValue("avatar", avatar);
+    if (avatar === "") {
+      setValue(
+        "avatar",
+        "https://ionicframework.com/docs/img/demos/avatar.svg"
+      );
+    }
     console.log("imag", avatar);
   };
 
@@ -66,7 +72,7 @@ const Register: React.FC = () => {
             token: data.token,
             userId: data.userId,
           });
-          router.push("/chat", "forward", "replace");
+          router.push("/inbox", "forward", "replace");
         },
         onError: (error) => {
           console.log("Could not create user", error);

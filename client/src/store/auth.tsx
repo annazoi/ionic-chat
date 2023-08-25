@@ -12,7 +12,7 @@ export const authStore: any = create()(
     persist(
       (set) => ({
         ...initialStateValues,
-        logOut: () => {
+        logOutUser: () => {
           set({
             ...initialStateValues,
           });

@@ -34,6 +34,7 @@ import { homeOutline, chatbubblesOutline, cameraOutline } from "ionicons/icons";
 import Inbox from "./pages/inbox/Inbox";
 import Menu from "./pages/menu/Menu";
 import Chat from "./components/chat/Chat";
+import Users from "./components/users/Users";
 setupIonicReact();
 
 const App: React.FC = () => (
@@ -53,8 +54,9 @@ const App: React.FC = () => (
             <Login />
           </Route>
           <Route component={Register} path="/register" exact />
-          <Route exact path="/chat">
-            <Chat />
+          <Route exact path="/chat/userId"></Route>
+          <Route exact path="/users">
+            <Users />
           </Route>
         </IonRouterOutlet>
 
@@ -65,6 +67,7 @@ const App: React.FC = () => (
           <IonTabButton tab="inbox" href="/inbox">
             <IonIcon icon={chatbubblesOutline}></IonIcon>
           </IonTabButton>
+
           <IonTabButton tab="camera" href="/camera">
             <IonIcon icon={cameraOutline}></IonIcon>
           </IonTabButton>

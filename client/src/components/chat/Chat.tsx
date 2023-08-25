@@ -24,7 +24,9 @@ const Chat = ({ username, room, socket }: ChatConfig) => {
     if (currentMessage !== "") {
       const messageData = {
         room: room,
-        author: username,
+        // author: username,
+        author: data?.user.username,
+        id: data?.user._id,
         message: currentMessage,
         time:
           new Date(Date.now()).getHours() +
@@ -40,6 +42,7 @@ const Chat = ({ username, room, socket }: ChatConfig) => {
   useEffect(() => {
     socket.on("receive_message", (data: any) => {
       setMessageList((list: any) => [...list, data]);
+      console.log("data", data);
     });
   }, [socket]);
 
@@ -50,24 +53,29 @@ const Chat = ({ username, room, socket }: ChatConfig) => {
   };
 
   // if (isSuccess) {
-  //   console.log("data", data);
+  //   console.log("data from Chat", data);
   // }
 
   return (
     <div>
       <div>
-        <p>Live Chat</p>
+        <p>
+          Chat between {data?.user.username} and {username}
+        </p>
       </div>
       <div>
         {messageList.map((messageContent: any, index: any) => {
           return (
             <div
               key={index}
-              id={username === messageContent.author ? "you" : "other"}
+              // id={username === messageContent.author ? "you" : "other"}
+              id={
+                data?.user.username === messageContent.author ? "you" : "other"
+              }
             >
               <div>
                 <div>
-                  <p>{messageContent.message}</p>
+                  <h1>{messageContent.message}</h1>
                 </div>
                 <div>
                   <p id="time">{messageContent.time}</p>

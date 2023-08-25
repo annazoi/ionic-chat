@@ -36,6 +36,12 @@ const register = async (req, res, next) => {
   }
 
   try {
+    if (avatar === "") {
+      return res.status(400).send({
+        message: "defult avatar",
+        avatar: "https://ionicframework.com/docs/img/demos/avatar.svg",
+      });
+    }
     const result = await cloudinary.uploader.upload(avatar, {
       folder: "users",
     });

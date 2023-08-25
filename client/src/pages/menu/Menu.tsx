@@ -8,15 +8,16 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonAvatar,
 } from "@ionic/react";
 import Logo from "../../assets/logo.png";
 import { authStore } from "../../store/auth";
 
 const Menu: React.FC = () => {
-  const { logOut } = authStore((store: any) => store);
+  const { logOutUser } = authStore((store: any) => store);
 
   const handleLogout = () => {
-    logOut();
+    logOutUser();
   };
 
   return (
@@ -28,7 +29,11 @@ const Menu: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          <IonButton expand="block" className="ion-margin-top">
+          <IonButton
+            expand="block"
+            className="ion-margin-top"
+            routerLink="/users"
+          >
             contacts
           </IonButton>
           <IonButton
@@ -51,9 +56,12 @@ const Menu: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding ion-text-center ">
-          <div>
-            <img src={Logo} alt="logo" width={"70%"} />
-          </div>
+          <img
+            src={Logo}
+            alt="logo"
+            width={"90%"}
+            style={{ padding: "50px" }}
+          />
           <IonButton routerLink="/register" expand="block">
             register
           </IonButton>

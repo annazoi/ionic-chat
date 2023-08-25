@@ -1,0 +1,2 @@
+inbox: fab button for user's choices
+default avatar if user didnt choose avatar
