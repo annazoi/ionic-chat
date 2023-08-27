@@ -14,18 +14,23 @@ import {
   IonRow,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { registerSchema } from "../../validations-schemas/auth";
+import { registerSchema } from "../../../validations-schemas/auth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { registerUser } from "../../services/auth";
-import { RegisterConfig } from "../../validations-schemas/interfaces/user";
-import { getUsers } from "../../services/users";
-import ImagePicker from "../../components/image/ImagePicker";
+import { RegisterConfig } from "../../../validations-schemas/interfaces/user";
+import ImagePicker from "../../../components/image/ImagePicker";
+import HidePassword from "../../../components/hidePassword/HidePassword";
+import { authStore } from "../../../store/auth";
+import { Route } from "react-router";
+import { registerUser } from "../../../services/auth";
 
 const Register: React.FC = () => {
+  const { logIn } = authStore((store: any) => store);
+  const router = useIonRouter();
   const {
     register,
     handleSubmit,
@@ -47,6 +52,12 @@ const Register: React.FC = () => {
 
   const handleImage = (avatar: string) => {
     setValue("avatar", avatar);
+    if (avatar === "") {
+      setValue(
+        "avatar",
+        "https://ionicframework.com/docs/img/demos/avatar.svg"
+      );
+    }
     console.log("imag", avatar);
   };
 
@@ -57,6 +68,11 @@ const Register: React.FC = () => {
       mutate(data, {
         onSuccess: (data: any) => {
           console.log("success", data);
+          logIn({
+            token: data.token,
+            userId: data.userId,
+          });
+          router.push("/inbox", "forward", "replace");
         },
         onError: (error) => {
           console.log("Could not create user", error);
@@ -69,7 +85,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <IonPage className="ion-text-center">
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -106,19 +122,11 @@ const Register: React.FC = () => {
                     <p style={{ color: "red" }}>{errors.username?.message}</p>
                   )}
 
-                  <IonInput
-                    fill="outline"
-                    labelPlacement="floating"
-                    label="Enter New Password"
-                    className="ion-margin-top"
-                    type="password"
-                    {...register("password", { required: true })}
-                  />
+                  <HidePassword register={register}></HidePassword>
                   {errors.password && (
                     <p style={{ color: "red" }}>{errors.password?.message}</p>
                   )}
                   <ImagePicker onChange={handleImage}></ImagePicker>
-
                   <IonButton
                     type="submit"
                     className="ion-margin-top"
