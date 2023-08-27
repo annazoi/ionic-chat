@@ -38,7 +38,6 @@ const socket = io(http, {
 
 socket.on("connection", (socket) => {
   console.log(`user connected: ${socket.id}`);
-  console.log(socket.connect);
 
   socket.on("join_room", (data) => {
     socket.join(data);

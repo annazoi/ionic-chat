@@ -47,10 +47,7 @@ const Inbox: React.FC = () => {
     queryKey: ["chats"],
     queryFn: () => getChats(),
   });
-
-  if (isSuccess) {
-    console.log("data", data);
-  }
+  isSuccess && console.log("chats", data);
 
   const handleLogout = () => {
     logOutUser();

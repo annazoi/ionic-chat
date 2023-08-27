@@ -4,7 +4,7 @@ const User = require("../model/User");
 const messageSchema = mongoose.Schema(
   {
     senderId: {
-      type: [mongoose.Schema.Types.ObjectId],
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },

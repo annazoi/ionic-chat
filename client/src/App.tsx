@@ -33,8 +33,8 @@ import Register from "./pages/auth/register/Register";
 import { homeOutline, chatbubblesOutline, cameraOutline } from "ionicons/icons";
 import Inbox from "./pages/inbox/Inbox";
 import Menu from "./pages/menu/Menu";
-import Chat from "./components/chat/Chat";
 import Users from "./components/users/Users";
+import Chat from "./pages/chat/Chat";
 setupIonicReact();
 
 const App: React.FC = () => (
@@ -53,7 +53,7 @@ const App: React.FC = () => (
 
           <Route component={Register} path="/register" exact />
           <Route component={Login} path="/login" exact />
-          <Route exact path="/chat/userId"></Route>
+          <Route component={Chat} path="/chat/:chatId" exact />
           <Route component={Users} path="/users" exact />
         </IonRouterOutlet>
 
