@@ -1,0 +1,15 @@
+.show-hide-password {
+  display: flex;
+}
+
+.show-hide-password-button {
+  margin-left: 6px;
+  margin-top: 16px;
+  margin-bottom: 1px;
+}
+
+@media screen and (max-width: 177px) {
+  .show-hide-password {
+    flex-direction: column;
+  }
+}

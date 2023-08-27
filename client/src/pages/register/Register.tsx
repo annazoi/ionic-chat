@@ -14,6 +14,7 @@ import {
   IonRow,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -22,10 +23,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { registerUser } from "../../services/auth";
 import { RegisterConfig } from "../../validations-schemas/interfaces/user";
-import { getUsers } from "../../services/users";
 import ImagePicker from "../../components/image/ImagePicker";
+import HidePassword from "../../components/hidePassword/HidePassword";
+import { authStore } from "../../store/auth";
+import { Route } from "react-router";
 
 const Register: React.FC = () => {
+  const { logIn } = authStore((store: any) => store);
+  const router = useIonRouter();
   const {
     register,
     handleSubmit,
@@ -57,6 +62,11 @@ const Register: React.FC = () => {
       mutate(data, {
         onSuccess: (data: any) => {
           console.log("success", data);
+          logIn({
+            token: data.token,
+            userId: data.userId,
+          });
+          router.push("/chat", "forward", "replace");
         },
         onError: (error) => {
           console.log("Could not create user", error);
@@ -69,7 +79,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <IonPage className="ion-text-center">
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -106,19 +116,11 @@ const Register: React.FC = () => {
                     <p style={{ color: "red" }}>{errors.username?.message}</p>
                   )}
 
-                  <IonInput
-                    fill="outline"
-                    labelPlacement="floating"
-                    label="Enter New Password"
-                    className="ion-margin-top"
-                    type="password"
-                    {...register("password", { required: true })}
-                  />
+                  <HidePassword register={register}></HidePassword>
                   {errors.password && (
                     <p style={{ color: "red" }}>{errors.password?.message}</p>
                   )}
                   <ImagePicker onChange={handleImage}></ImagePicker>
-
                   <IonButton
                     type="submit"
                     className="ion-margin-top"

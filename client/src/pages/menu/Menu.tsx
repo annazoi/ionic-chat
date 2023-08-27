@@ -10,8 +10,15 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import Logo from "../../assets/logo.png";
+import { authStore } from "../../store/auth";
 
 const Menu: React.FC = () => {
+  const { logOut } = authStore((store: any) => store);
+
+  const handleLogout = () => {
+    logOut();
+  };
+
   return (
     <>
       <IonMenu contentId="main-content">
@@ -23,6 +30,14 @@ const Menu: React.FC = () => {
         <IonContent className="ion-padding">
           <IonButton expand="block" className="ion-margin-top">
             contacts
+          </IonButton>
+          <IonButton
+            onClick={handleLogout}
+            expand="block"
+            className="ion-margin-top"
+            routerLink="/login"
+          >
+            Logout
           </IonButton>
         </IonContent>
       </IonMenu>
