@@ -1,4 +1,4 @@
-import { Link, Redirect, Route } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 import {
   IonApp,
   IonIcon,
@@ -9,8 +9,7 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import Menu from "./pages/menu/Menu";
-import Chat from "./pages/chat/Chat";
+
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -29,10 +28,13 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import Login from "./pages/login/Login";
-import Register from "./pages/register/Register";
+import Login from "./pages/auth/login/Login";
+import Register from "./pages/auth/register/Register";
 import { homeOutline, chatbubblesOutline, cameraOutline } from "ionicons/icons";
-
+import Inbox from "./pages/inbox/Inbox";
+import Menu from "./pages/menu/Menu";
+import Chat from "./components/chat/Chat";
+import Users from "./components/users/Users";
 setupIonicReact();
 
 const App: React.FC = () => (
@@ -45,22 +47,24 @@ const App: React.FC = () => (
             <Menu />
           </Route>
 
-          <Route exact path="/chat">
-            <Chat />
+          <Route exact path="/inbox">
+            <Inbox />
           </Route>
-          <Route exact path="/login">
-            <Login />
-          </Route>
+
           <Route component={Register} path="/register" exact />
+          <Route component={Login} path="/login" exact />
+          <Route exact path="/chat/userId"></Route>
+          <Route component={Users} path="/users" exact />
         </IonRouterOutlet>
 
         <IonTabBar slot="bottom">
           <IonTabButton tab="menu" href="/menu">
             <IonIcon icon={homeOutline}></IonIcon>
           </IonTabButton>
-          <IonTabButton tab="chat" href="/chat">
+          <IonTabButton tab="inbox" href="/inbox">
             <IonIcon icon={chatbubblesOutline}></IonIcon>
           </IonTabButton>
+
           <IonTabButton tab="camera" href="/camera">
             <IonIcon icon={cameraOutline}></IonIcon>
           </IonTabButton>

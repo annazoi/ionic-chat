@@ -6,3 +6,8 @@ export const registerSchema = yup.object().shape({
   password: yup.string().required("Invalid password"),
   // avatar: yup.string().optional(),
 });
+
+export const loginSchema = yup.object().shape({
+  username: yup.string().required("Invalid username"),
+  password: yup.string().required("Invalid password"),
+});

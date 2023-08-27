@@ -6,10 +6,10 @@ import { Socket } from "socket.io-client";
 import { API_URL } from "../../constants";
 import { useEffect, useState } from "react";
 import React from "react";
-import { ChatConfig } from "../../validations-schemas/interfaces/chat";
+// import { ChatConfig } from "../../validations-schemas/interfaces/chat";
 import { IonButton, IonContent } from "@ionic/react";
 
-const Chat = ({ username, room, socket }: ChatConfig) => {
+const Chat = ({ username, room, socket }: any) => {
   const { isLoggedIn, userId } = authStore((store: any) => store);
 
   const [currentMessage, setCurrentMessage] = useState<string>("");

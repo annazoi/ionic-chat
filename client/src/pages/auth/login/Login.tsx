@@ -18,11 +18,10 @@ import {
   IonButtons,
   IonIcon,
   IonGrid,
-  IonToast,
 } from "@ionic/react";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { loginUser } from "../../../services/auth";
 import { LoginConfig } from "../../../validations-schemas/interfaces/user";
 import { authStore } from "../../../store/auth";
@@ -57,10 +56,9 @@ const Login: React.FC = () => {
           console.log("success", data);
           logIn({
             token: data.token,
-            userId: data.user.userId,
-            avatar: data.user.avatar,
+            userId: data.userId,
           });
-          router.push("/inbox");
+          router.push("/inbox", "forward", "replace");
         },
         onError: (error: any) => {
           console.log("error", error);
@@ -109,11 +107,6 @@ const Login: React.FC = () => {
                     Login
                   </IonButton>
                 </form>
-                {/* <IonToast
-                  trigger="open-toast"
-                  message="This toast will disappear after 5 seconds"
-                  duration={isLoading}
-                ></IonToast> */}
               </IonCardContent>
             </IonCard>
           </IonCol>

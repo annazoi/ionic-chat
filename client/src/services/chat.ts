@@ -1,4 +1,4 @@
-import { CreateChatConfig } from "./../validations-schemas/interfaces/chat.d";
+import { CreateChatConfig } from "../validations-schemas/interfaces/chat";
 import Axios from "axios";
 import { API_URL } from "../constants";
 import { getAuthState } from "../store/auth";

@@ -7,6 +7,7 @@ const formidable = require("express-formidable");
 // Import the Routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
+const chatRoutes = require("./routes/chat");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const http = require("http").Server(app);
@@ -26,6 +27,7 @@ app.use(cors());
 // Import the Routes
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+app.use("/chat", chatRoutes);
 
 const socket = io(http, {
   cors: {
