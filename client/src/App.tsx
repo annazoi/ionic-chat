@@ -1,4 +1,4 @@
-import { Redirect, Route } from "react-router-dom";
+import { Link, Redirect, Route } from "react-router-dom";
 import {
   IonApp,
   IonIcon,
@@ -9,7 +9,8 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-
+import Menu from "./pages/menu/Menu";
+import Chat from "./pages/chat/Chat";
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -31,9 +32,7 @@ import "./theme/variables.css";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import { homeOutline, chatbubblesOutline, cameraOutline } from "ionicons/icons";
-import Inbox from "./pages/inbox/Inbox";
-import Menu from "./pages/menu/Menu";
-import Chat from "./components/chat/Chat";
+
 setupIonicReact();
 
 const App: React.FC = () => (
@@ -46,23 +45,20 @@ const App: React.FC = () => (
             <Menu />
           </Route>
 
-          <Route exact path="/inbox">
-            <Inbox />
+          <Route exact path="/chat">
+            <Chat />
           </Route>
           <Route exact path="/login">
             <Login />
           </Route>
           <Route component={Register} path="/register" exact />
-          <Route exact path="/chat">
-            <Chat />
-          </Route>
         </IonRouterOutlet>
 
         <IonTabBar slot="bottom">
           <IonTabButton tab="menu" href="/menu">
             <IonIcon icon={homeOutline}></IonIcon>
           </IonTabButton>
-          <IonTabButton tab="inbox" href="/inbox">
+          <IonTabButton tab="chat" href="/chat">
             <IonIcon icon={chatbubblesOutline}></IonIcon>
           </IonTabButton>
           <IonTabButton tab="camera" href="/camera">

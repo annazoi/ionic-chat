@@ -1,7 +1,8 @@
 import { useRef, useState, useEffect } from "react";
+import { IonAvatar } from "@ionic/react";
 import "./style.css";
 
-const ImagePicker = ({ name = "image", onChange, value, className }: any) => {
+const ImagePicker = ({ name = "image", onChange, value }: any) => {
   const imageRef: any = useRef(null);
   const [image, setImage] = useState(null);
 
@@ -77,7 +78,7 @@ const ImagePicker = ({ name = "image", onChange, value, className }: any) => {
               <polyline points="16 16 12 12 8 16"></polyline>
             </svg>
           </div>
-          <p className="image-container">Your Avatar</p>
+          <p>Your Avatar</p>
         </>
       )}
     </div>

@@ -9,8 +9,9 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const bodyParser = require("body-parser");
 const multer = require("multer");
-const http = require("http").Server(app);
-const io = require("socket.io");
+const path = require("path");
+const fs = require("fs");
+const forms = multer();
 
 // app.use(formidable());
 app.use(express.json({ limit: "50mb" }));
@@ -24,43 +25,18 @@ app.use(
 app.use(cors());
 
 // Import the Routes
-app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
-
-const socket = io(http, {
-  cors: {
-    origin: "http://localhost:8100",
-    methods: ["GET", "POST"],
-  },
-});
-
-socket.on("connection", (socket) => {
-  console.log(`user connected: ${socket.id}`);
-  console.log(socket.connect);
-
-  socket.on("join_room", (data) => {
-    socket.join(data);
-    console.log(`user with id: ${socket.id} joined room: ${data}`);
-  });
-
-  socket.on("send_message", (data) => {
-    console.log(data);
-    socket.to(data.room).emit("receive_message", data);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("user disconnected", socket.id);
-  });
-
-  socket.on("connect_error", (err) => {
-    console.log(`connect_error due to ${err.message}`);
-  });
-});
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+// ROUTES
+// GET() -> fetch the data
+// POST() -> push the data
+// PATCH() -> updated
+// DELETE() -> delete the data
 
 // Connect the mongoDB
 mongoose.connect(process.env.DB_CONNECTION).then(() => {
   // Listening port
-  http.listen(3000, () => {
+  app.listen(3000, () => {
     console.log("App is running");
   });
 });
