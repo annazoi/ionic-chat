@@ -35,7 +35,14 @@ import Inbox from "./pages/inbox/Inbox";
 import Menu from "./pages/menu/Menu";
 import Users from "./components/users/Users";
 import Chat from "./pages/chat/Chat";
+import { getAuthState } from "./store/auth";
+import { get } from "react-hook-form";
 setupIonicReact();
+
+const getIsloggedIn = () => {
+  const { isLoggedIn } = getAuthState();
+  return isLoggedIn;
+};
 
 const App: React.FC = () => (
   <IonApp>
@@ -47,20 +54,23 @@ const App: React.FC = () => (
             <Menu />
           </Route>
 
-          <Route exact path="/inbox">
-            <Inbox />
-          </Route>
-
-          <Route component={Register} path="/register" exact />
-          <Route component={Login} path="/login" exact />
-          <Route component={Chat} path="/chat/:chatId" exact />
-          <Route component={Users} path="/users" exact />
+          <Route
+            component={Inbox}
+            path="/inbox"
+            exact={getIsloggedIn() && true}
+          />
+          <Route component={Register} path="/register" exact={true} />
+          <Route component={Login} path="/login" exact={true} />
+          <Route component={Chat} path="/chat/:chatId" exact={true} />
+          <Route component={Users} path="/users" exact={true} />
         </IonRouterOutlet>
 
+        {/* {getIsloggedIn() && ()} */}
         <IonTabBar slot="bottom">
           <IonTabButton tab="menu" href="/menu">
             <IonIcon icon={homeOutline}></IonIcon>
           </IonTabButton>
+
           <IonTabButton tab="inbox" href="/inbox">
             <IonIcon icon={chatbubblesOutline}></IonIcon>
           </IonTabButton>
