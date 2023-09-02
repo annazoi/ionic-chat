@@ -8,29 +8,30 @@ import {
   IonContent,
   IonHeader,
   IonInput,
-  IonItem,
-  IonLabel,
   IonPage,
   IonRow,
   IonTitle,
+  IonToast,
   IonToolbar,
   useIonRouter,
 } from "@ionic/react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { registerSchema } from "../../../validations-schemas/auth";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { registerUser } from "../../../services/auth";
 import { RegisterConfig } from "../../../validations-schemas/interfaces/user";
 import ImagePicker from "../../../components/image/ImagePicker";
-import HidePassword from "../../../components/hidePassword/HidePassword";
 import { authStore } from "../../../store/auth";
-import { Route } from "react-router";
-import { registerUser } from "../../../services/auth";
-
+import Toast from "../../../components/toast/Toast";
+import Loading from "../../../components/loading/Loading";
 const Register: React.FC = () => {
   const { logIn } = authStore((store: any) => store);
-  const router = useIonRouter();
+
+  const [showToast, setShowToast] = useState(false);
+  const [message, setMessage] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -52,14 +53,10 @@ const Register: React.FC = () => {
 
   const handleImage = (avatar: string) => {
     setValue("avatar", avatar);
-    if (avatar === "") {
-      setValue(
-        "avatar",
-        "https://ionicframework.com/docs/img/demos/avatar.svg"
-      );
-    }
     console.log("imag", avatar);
   };
+
+  const router = useIonRouter();
 
   const onSubmit = (data: RegisterConfig) => {
     console.log(data);
@@ -71,8 +68,11 @@ const Register: React.FC = () => {
           logIn({
             token: data.token,
             userId: data.userId,
+            avatar: data.avatar,
           });
-          router.push("/inbox", "forward", "replace");
+          setMessage("Form submitted successfully!");
+          setShowToast(true);
+          router.push("/inbox");
         },
         onError: (error) => {
           console.log("Could not create user", error);
@@ -99,6 +99,7 @@ const Register: React.FC = () => {
           <IonCol size="12" sizeMd="8" sizeLg="6" sizeXl="4">
             <IonCard>
               <IonCardContent>
+                {isLoading && <Loading showLoading={isLoading} />}
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <IonInput
                     fill="outline"
@@ -122,12 +123,21 @@ const Register: React.FC = () => {
                     <p style={{ color: "red" }}>{errors.username?.message}</p>
                   )}
 
-                  <HidePassword register={register}></HidePassword>
+                  <IonInput
+                    fill="outline"
+                    labelPlacement="floating"
+                    label="Enter New Password"
+                    className="ion-margin-top"
+                    type="password"
+                    {...register("password", { required: true })}
+                  />
                   {errors.password && (
                     <p style={{ color: "red" }}>{errors.password?.message}</p>
                   )}
                   <ImagePicker onChange={handleImage}></ImagePicker>
+
                   <IonButton
+                    id="open-toast"
                     type="submit"
                     className="ion-margin-top"
                     expand="block"
@@ -135,6 +145,11 @@ const Register: React.FC = () => {
                     Register
                   </IonButton>
                 </form>
+                <Toast
+                  showToast={showToast}
+                  message={message}
+                  setShowToast={setShowToast}
+                />
               </IonCardContent>
             </IonCard>
           </IonCol>

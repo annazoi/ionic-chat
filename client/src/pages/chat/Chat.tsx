@@ -2,6 +2,9 @@ import {
   IonButton,
   IonContent,
   IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -44,6 +47,8 @@ const Chat: React.FC<ChatConfig> = () => {
     );
   };
 
+  // isSuccess && console.log("chat", data);
+
   return (
     <IonPage>
       <IonHeader>
@@ -56,10 +61,18 @@ const Chat: React.FC<ChatConfig> = () => {
           <IonTitle size="large">Blank</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent class="ion-padding">
+        {isSuccess &&
+          data?.chat.messages.map((message: any) => (
+            <IonItem key={message._id}>
+              <IonLabel>{message.message}</IonLabel>
+              <IonLabel>{message.createdAt}</IonLabel>
+            </IonItem>
+          ))}
+
         <input
           type="text"
-          value={newMessage}
+          value={newMessage}  
           placeholder="Hey..."
           onKeyDown={handleEnterPress}
           onChange={(event) => {

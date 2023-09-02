@@ -21,12 +21,12 @@ const createChat = async (req, res) => {
 const getChats = async (req, res) => {
   try {
     const chats = await Chat.find({ members: req.userId }).populate(
-      "members creatorId mess ages.senderId",
+      "members creatorId messages.senderId",
       "-password"
     );
     res.status(200).json({ message: "ok", chats: chats });
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ message: err, chats: null });
   }
 };
 

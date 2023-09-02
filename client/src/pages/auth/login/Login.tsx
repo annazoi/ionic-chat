@@ -7,31 +7,31 @@ import {
   IonToolbar,
   IonButton,
   useIonRouter,
-  useIonLoading,
   IonCard,
   IonCardContent,
   IonCol,
   IonRow,
-  IonItem,
-  IonLabel,
   IonBackButton,
   IonButtons,
-  IonIcon,
-  IonGrid,
 } from "@ionic/react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../../../services/auth";
 import { LoginConfig } from "../../../validations-schemas/interfaces/user";
 import { authStore } from "../../../store/auth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../../../validations-schemas/auth";
 import HidePassword from "../../../components/hidePassword/HidePassword";
+import Toast from "../../../components/toast/Toast";
+import Loading from "../../../components/loading/Loading";
 
 const Login: React.FC = () => {
   const router = useIonRouter();
   const { isLoggedIn, logIn } = authStore((store: any) => store);
+
+  const [showToast, setShowToast] = useState(false);
+  const [message, setMessage] = useState("");
 
   const {
     register,
@@ -49,7 +49,7 @@ const Login: React.FC = () => {
     mutationFn: loginUser,
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     try {
       mutate(data, {
         onSuccess: (data: any) => {
@@ -57,9 +57,13 @@ const Login: React.FC = () => {
           logIn({
             token: data.token,
             userId: data.userId,
+            avatar: data.avatar,
           });
-          router.push("/inbox", "forward", "replace");
+          setMessage("Form submitted successfully!");
+          setShowToast(true);
+          router.push("/inbox");
         },
+
         onError: (error: any) => {
           console.log("error", error);
         },
@@ -84,6 +88,7 @@ const Login: React.FC = () => {
           <IonCol size="12" sizeMd="8" sizeLg="6" sizeXl="4">
             <IonCard>
               <IonCardContent>
+                <Loading showLoading={isLoading} />
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <IonInput
                     fill="outline"
@@ -91,7 +96,7 @@ const Login: React.FC = () => {
                     label="Username"
                     className="ion-margin-top"
                     {...register("username", { required: true })}
-                  />{" "}
+                  />
                   {errors.username && (
                     <p style={{ color: "red" }}>{errors.username?.message}</p>
                   )}
@@ -103,11 +108,21 @@ const Login: React.FC = () => {
                     type="submit"
                     className="ion-margin-top"
                     expand="block"
+                    disabled={isLoading}
                   >
                     Login
                   </IonButton>
                 </form>
+
+                <Toast
+                  showToast={showToast}
+                  message={message}
+                  setShowToast={setShowToast}
+                />
               </IonCardContent>
+              <IonButton routerLink="/register" fill="clear" expand="block">
+                Create New Account
+              </IonButton>
             </IonCard>
           </IonCol>
         </IonRow>

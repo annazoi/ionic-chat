@@ -24,7 +24,7 @@ import {
   IonImg,
   IonChip,
 } from "@ionic/react";
-import React, { useState } from "react";
+import React from "react";
 import { useSocket } from "../../hooks/sockets";
 import Chat from "../chat/Chat";
 import { authStore } from "../../store/auth";

@@ -2,7 +2,6 @@ import { CreateChatConfig } from "../validations-schemas/interfaces/chat";
 import Axios from "axios";
 import { API_URL } from "../constants";
 import { getAuthState } from "../store/auth";
-import { get } from "react-hook-form";
 
 const getConfig = () => {
   return {

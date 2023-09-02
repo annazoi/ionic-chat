@@ -1,5 +1,6 @@
 import {
   IonAvatar,
+  IonBackButton,
   IonButton,
   IonButtons,
   IonCard,
@@ -31,7 +32,9 @@ import { ChatConfig } from "../../validations-schemas/interfaces/chat";
 import React from "react";
 
 const Inbox: React.FC = () => {
-  const { isLoggedIn, logOutUser, avatar } = authStore((store: any) => store);
+  const { isLoggedIn, logOutUser, avatar, userId } = authStore(
+    (store: any) => store
+  );
   const { socket } = useSocket();
 
   const joinRoom = () => {
@@ -43,7 +46,7 @@ const Inbox: React.FC = () => {
   const [room, setRoom] = useState<string>("");
   const [showChat, setShowChat] = useState<boolean>(false);
 
-  const { data, isSuccess, isLoading } = useQuery<any>({
+  const { data, isSuccess, isLoading, error } = useQuery<any>({
     queryKey: ["chats"],
     queryFn: () => getChats(),
   });
@@ -58,14 +61,17 @@ const Inbox: React.FC = () => {
       <IonPage>
         <IonHeader>
           <IonToolbar>
+            <IonButtons slot="start">
+              <IonBackButton></IonBackButton>
+            </IonButtons>
             <IonTitle>Inbox</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonFab slot="fixed" horizontal="end" edge={true}>
-          {isLoggedIn && isLoggedIn ? (
+          {isLoggedIn ? (
             <>
               <IonFabButton size="small">
-                <img src={avatar} alt=""></img>
+                <img src={avatar} alt="" style={{ width: "100%" }}></img>
               </IonFabButton>
               <IonFabList side="bottom">
                 <IonFabButton>
@@ -78,27 +84,13 @@ const Inbox: React.FC = () => {
                   <IonIcon icon={globe}></IonIcon>
                 </IonFabButton>
               </IonFabList>
-            </>
-          ) : (
-            <IonFabButton size="small">
-              <img
-                alt="Silhouette of a person's head"
-                src="https://ionicframework.com/docs/img/demos/avatar.svg"
-              />
-            </IonFabButton>
-          )}
-        </IonFab>
-
-        <IonContent>
-          {isLoggedIn && (
-            <>
-              <IonRow class="ion-justify-content-center">
-                <IonCol size="12" sizeMd="8" sizeLg="6" sizeXl="4">
-                  <IonCard>
-                    <IonCardContent>
-                      <IonSearchbar></IonSearchbar>
-                      {isSuccess &&
-                        data?.chats.map((chat: any) => (
+              <IonContent>
+                <IonRow class="ion-justify-content-center">
+                  <IonCol size="12" sizeMd="8" sizeLg="6" sizeXl="4">
+                    <IonCard>
+                      <IonCardContent>
+                        <IonSearchbar></IonSearchbar>
+                        {data?.chats.map((chat: any) => (
                           <IonCard
                             key={chat._id}
                             routerLink={`/chat/${chat._id}`}
@@ -108,33 +100,51 @@ const Inbox: React.FC = () => {
                               // joinChat(user.username);
                             }}
                           >
-                            <IonCardContent className="ion-no-padding">
-                              <IonItem lines="none">
-                                <IonAvatar slot="start">
-                                  <IonImg src={chat.creatorId.avatar} />
-                                </IonAvatar>
-                                <IonLabel>{chat.username}</IonLabel>
-                                <IonChip slot="end" color={"primary"}>
-                                  {/* {chat.phone} */}
-                                </IonChip>
-                              </IonItem>
-                            </IonCardContent>
+                            {chat?.members.map((member: any) => {
+                              return (
+                                <div key={member._id}>
+                                  {member._id !== userId && (
+                                    <IonCardContent className="ion-no-padding">
+                                      <IonItem lines="none">
+                                        <IonAvatar slot="start">
+                                          <IonImg src={member.avatar} />
+                                        </IonAvatar>
+                                        <IonLabel>{member.username}</IonLabel>
+                                        <IonChip slot="end" color={"primary"}>
+                                          {member.phone}
+                                        </IonChip>
+                                      </IonItem>
+                                    </IonCardContent>
+                                  )}
+                                </div>
+                              );
+                            })}
                           </IonCard>
                         ))}
-                    </IonCardContent>
-                  </IonCard>
-                </IonCol>
-              </IonRow>
-              <IonButton className="ion-padding">Create Room</IonButton>
+                      </IonCardContent>
+                    </IonCard>
+                  </IonCol>
+                </IonRow>
+                <IonButton className="ion-padding">Create Room</IonButton>
+              </IonContent>
+            </>
+          ) : (
+            <>
+              <IonFabButton size="small">
+                <img
+                  alt="Silhouette of a person's head"
+                  src="https://ionicframework.com/docs/img/demos/avatar.svg"
+                />
+              </IonFabButton>
+              <IonButton routerLink="/login" expand="block">
+                Login First
+              </IonButton>
             </>
           )}
-        </IonContent>
+        </IonFab>
       </IonPage>
     </>
   );
 };
 
 export default Inbox;
-
-{
-}

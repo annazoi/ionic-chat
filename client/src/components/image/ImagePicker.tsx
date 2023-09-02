@@ -78,7 +78,7 @@ const ImagePicker = ({ name = "image", onChange, value }: any) => {
               <polyline points="16 16 12 12 8 16"></polyline>
             </svg>
           </div>
-          <p>Your Avatar</p>
+          <p className="image-container">Your Avatar</p>
         </>
       )}
     </div>
