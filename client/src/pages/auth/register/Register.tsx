@@ -69,6 +69,7 @@ const Register: React.FC = () => {
             token: data.token,
             userId: data.userId,
             avatar: data.avatar,
+            username: data.username,
           });
           setMessage("Form submitted successfully!");
           setShowToast(true);

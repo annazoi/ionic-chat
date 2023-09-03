@@ -1,23 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { UserConfig } from "../../validations-schemas/interfaces/user";
 import { getUsers } from "../../services/users";
 
 import {
-  IonBackButton,
-  IonButton,
-  IonButtons,
   IonCard,
   IonCardContent,
   IonCol,
   IonContent,
-  IonHeader,
-  IonMenuButton,
-  IonPage,
   IonRow,
-  IonTitle,
-  IonToolbar,
   IonSearchbar,
-  IonIcon,
   IonAvatar,
   IonItem,
   IonLabel,
@@ -54,37 +44,31 @@ const Users: React.FC = () => {
     <IonContent>
       {isLoggedIn && (
         <>
-          <IonRow class="ion-justify-content-center">
-            <IonCol size="12" sizeMd="8" sizeLg="6" sizeXl="4">
-              <IonCard>
-                <IonCardContent>
-                  <IonSearchbar></IonSearchbar>
-                  {isSuccess &&
-                    data?.users.map((user: any) => (
-                      <IonCard
-                        key={user._id}
-                        routerLink={`/chat/${chatId}`}
-                        onClick={() => {
-                          console.log("selected user", user);
-                        }}
-                      >
-                        <IonCardContent className="ion-no-padding">
-                          <IonItem lines="none">
-                            <IonAvatar slot="start">
-                              <IonImg src={user.avatar} />
-                            </IonAvatar>
-                            <IonLabel>{user.username}</IonLabel>
-                            <IonChip slot="end" color={"primary"}>
-                              {user.phone}
-                            </IonChip>
-                          </IonItem>
-                        </IonCardContent>
-                      </IonCard>
-                    ))}
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-          </IonRow>
+          <IonCardContent>
+            <IonSearchbar></IonSearchbar>
+            {isSuccess &&
+              data?.users.map((user: any) => (
+                <IonCard
+                  key={user._id}
+                  routerLink={`/chat/${chatId}`}
+                  onClick={() => {
+                    console.log("selected user", user);
+                  }}
+                >
+                  <IonCardContent className="ion-no-padding">
+                    <IonItem lines="none">
+                      <IonAvatar slot="start">
+                        <IonImg src={user.avatar} />
+                      </IonAvatar>
+                      <IonLabel>{user.username}</IonLabel>
+                      <IonChip slot="end" color={"primary"}>
+                        {user.phone}
+                      </IonChip>
+                    </IonItem>
+                  </IonCardContent>
+                </IonCard>
+              ))}
+          </IonCardContent>
         </>
       )}
     </IonContent>

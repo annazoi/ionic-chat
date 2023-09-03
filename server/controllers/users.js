@@ -16,7 +16,7 @@ const getUsers = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id, "-password");
 
     if (!user) {
       return res.status(404).json({ message: "User Not Found", user: null });
@@ -47,7 +47,7 @@ const updateUser = async (req, res) => {
 
     let query = { $set: {} };
     for (let key in req.body) {
-      if (user[key] && user[key] !== req.body[key]) {
+      if (user[key]) {
         if (key == "password") {
           req.body[key] = await bcrypt.hash(req.body[key], 10);
         } else if (key == "avatar") {
@@ -59,12 +59,11 @@ const updateUser = async (req, res) => {
         query.$set[key] = req.body[key];
       }
     }
-    const updatedUser = await User.updateOne(
-      { _id: req.params.id },
-      query
-    ).exec();
+    await User.updateOne({ _id: req.params.id }, query).exec();
 
-    res.status(201).json({ message: "ok", user: updatedUser });
+    const userInfo = await User.findById(req.params.id, "-password").exec();
+
+    res.status(201).json({ message: "ok", user: userInfo });
   } catch (err) {
     res.status(404).json({ message: err, user: null });
   }

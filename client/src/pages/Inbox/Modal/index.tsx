@@ -1,24 +1,26 @@
 import {
   IonButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonModal,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import React, { Children } from "react";
-import Users from "../Users";
+import React, { Children, Component } from "react";
 
 interface ModalProps {
   isOpen: any;
   title: string;
-  children: any;
+  component: any;
   onClose: any;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  component: Component,
+}) => {
   return (
     <IonModal isOpen={isOpen}>
       <IonHeader>
@@ -35,7 +37,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      {children}
+      <Component opened={isOpen} />
     </IonModal>
   );
 };

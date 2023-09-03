@@ -32,7 +32,12 @@ import Modal from "./Modal";
 import Settings from "./Settings";
 
 const Inbox: React.FC = () => {
-  const { logOutUser, avatar, userId } = authStore((store: any) => store);
+  const {
+    logOutUser,
+    avatar,
+    userId,
+    username: usernameStore,
+  } = authStore((store: any) => store);
   const { socket } = useSocket();
 
   const joinRoom = () => {
@@ -40,7 +45,6 @@ const Inbox: React.FC = () => {
     setShowChat(true);
     console.log("socket connected: ", socket.connected);
   };
-  const [username, setUsername] = useState<any>();
   const [room, setRoom] = useState<string>("");
   const [showChat, setShowChat] = useState<boolean>(false);
   const [openSearch, setOpenSearch] = useState<boolean>(false);
@@ -49,8 +53,15 @@ const Inbox: React.FC = () => {
   const { data, isSuccess, isLoading, error } = useQuery<any>({
     queryKey: ["chats"],
     queryFn: () => getChats(),
+    onSuccess: (data: any) => {
+      {
+        data?.chats.map((chat: any) => {
+          console.log("chat", chat);
+          socket?.emit("join_room", chat._id);
+        });
+      }
+    },
   });
-  isSuccess && console.log("chats", data);
 
   const handleLogout = () => {
     logOutUser();
@@ -60,7 +71,7 @@ const Inbox: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Inbox</IonTitle>
+          <IonTitle>{usernameStore}'s Inbox</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonFab slot="fixed" horizontal="end" edge={true}>
@@ -75,12 +86,7 @@ const Inbox: React.FC = () => {
           >
             <IonIcon icon={settings}></IonIcon>
           </IonFabButton>
-          <Modal
-            isOpen={openSettings}
-            onClose={setOpenSettings}
-            title="Settings"
-            children={<Settings />}
-          ></Modal>
+
           <IonFabButton routerLink="/login" onClick={handleLogout}>
             <IonIcon icon={logOut}></IonIcon>
           </IonFabButton>
@@ -96,7 +102,6 @@ const Inbox: React.FC = () => {
             routerLink={`/chat/${chat._id}`}
             onClick={() => {
               console.log("selected user", chat);
-              // router.push(`/chat/${user._id}`);
               // joinChat(user.username);
             }}
           >
@@ -121,23 +126,30 @@ const Inbox: React.FC = () => {
             })}
           </IonCard>
         ))}
+        <IonFab slot="fixed" vertical="bottom" horizontal="end">
+          <IonFabButton
+            size="small"
+            onClick={() => {
+              setOpenSearch(true);
+            }}
+          >
+            <img src={addCircle} alt="" style={{ width: "100%" }}></img>
+          </IonFabButton>
+        </IonFab>
       </IonContent>
-      <IonFab slot="fixed" vertical="bottom" horizontal="end">
-        <IonFabButton
-          size="small"
-          onClick={() => {
-            setOpenSearch(true);
-          }}
-        >
-          <img src={addCircle} alt="" style={{ width: "100%" }}></img>
-        </IonFabButton>
-      </IonFab>
 
       <Modal
         isOpen={openSearch}
         onClose={setOpenSearch}
         title="Find Contact"
-        children={<Users />}
+        component={Users}
+      ></Modal>
+
+      <Modal
+        isOpen={openSettings}
+        onClose={setOpenSettings}
+        title="Settings"
+        component={Settings}
       ></Modal>
     </IonPage>
   );

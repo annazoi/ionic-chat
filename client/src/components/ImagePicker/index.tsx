@@ -8,7 +8,7 @@ const ImagePicker = ({ name = "image", onChange, value }: any) => {
 
   useEffect(() => {
     setImage(value);
-  }, []);
+  }, [value]);
 
   const handleImageClick = () => {
     imageRef.current.click();

@@ -121,6 +121,7 @@ const login = async (req, res, next) => {
     userId: existingUser.id,
     token: token,
     avatar: existingUser.avatar,
+    username: existingUser.username,
   });
 };
 

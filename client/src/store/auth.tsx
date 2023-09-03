@@ -6,6 +6,7 @@ interface AuthState {
   token: string;
   userId: string;
   avatar: string;
+  username: string;
   logOutUser: () => void;
   logIn: (payload: any) => void;
 }
@@ -15,6 +16,7 @@ const initialStateValues = {
   token: "",
   userId: "",
   avatar: "",
+  username: "",
 };
 
 export const authStore = create<AuthState>()(
@@ -33,7 +35,13 @@ export const authStore = create<AuthState>()(
             token: payload.token,
             userId: payload.userId,
             avatar: payload.avatar,
+            username: payload.username,
           }),
+        updateUser: (payload: any) =>
+          set((state) => ({
+            ...state,
+            ...payload,
+          })),
       }),
       {
         name: "auth-storage-client",

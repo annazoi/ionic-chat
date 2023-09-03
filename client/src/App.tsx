@@ -53,23 +53,16 @@ const App: React.FC = () => {
             <>
               <IonTabs>
                 <IonRouterOutlet>
-                  <Route component={Inbox} path="/inbox" exact />
-                  <Route component={Chat} path="/chat/:chatId" exact />
-                  <Route component={Users} path="/users" exact />
-                  <Route component={Settings} path="/settings" exact />
-
-                  <Redirect from="/" to="/inbox" exact />
+                  <Route path="/inbox" component={Inbox} />
+                  <Route path="/chat/:chatId" component={Chat} />
+                  <Route path="/users" component={Users} />
+                  <Route path="/settings" component={Settings} />
+                  <Redirect exact from="/" to="/inbox" />
                 </IonRouterOutlet>
-
                 <IonTabBar slot="bottom">
-                  {/* <IonTabButton tab="menu" href="/menu">
-                    <IonIcon icon={homeOutline}></IonIcon>
-                  </IonTabButton> */}
-
                   <IonTabButton tab="inbox" href="/inbox">
                     <IonIcon icon={chatbubblesOutline}></IonIcon>
                   </IonTabButton>
-
                   <IonTabButton tab="camera" href="/camera">
                     <IonIcon icon={cameraOutline}></IonIcon>
                   </IonTabButton>
@@ -77,7 +70,7 @@ const App: React.FC = () => {
               </IonTabs>
             </>
           ) : (
-            <Redirect from="/" to="/menu" exact />
+            <Redirect exact from="/" to="/login" />
           )}
         </IonRouterOutlet>
       </IonReactRouter>
