@@ -22,9 +22,9 @@ import { LoginConfig } from "../../../validations-schemas/interfaces/user";
 import { authStore } from "../../../store/auth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../../../validations-schemas/auth";
-import HidePassword from "../../../components/hidePassword/HidePassword";
-import Toast from "../../../components/toast/Toast";
-import Loading from "../../../components/loading/Loading";
+import HidePassword from "../../../components/HidePassword";
+import Toast from "../../../components/Toast";
+import Loading from "../../../components/Loading";
 
 const Login: React.FC = () => {
   const router = useIonRouter();

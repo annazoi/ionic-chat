@@ -9,10 +9,10 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../../components/ExploreContainer";
-import { getChat, sendMessage } from "../../services/chat";
+import ExploreContainer from "../../../components/ExploreContainer";
+import { getChat, sendMessage } from "../../../services/chat";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { ChatConfig } from "../../validations-schemas/interfaces/chat";
+import { ChatConfig } from "../../../validations-schemas/interfaces/chat";
 import { useParams } from "react-router";
 import { useState } from "react";
 
@@ -72,7 +72,7 @@ const Chat: React.FC<ChatConfig> = () => {
 
         <input
           type="text"
-          value={newMessage}  
+          value={newMessage}
           placeholder="Hey..."
           onKeyDown={handleEnterPress}
           onChange={(event) => {

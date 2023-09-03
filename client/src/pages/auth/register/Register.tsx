@@ -22,10 +22,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../../services/auth";
 import { RegisterConfig } from "../../../validations-schemas/interfaces/user";
-import ImagePicker from "../../../components/image/ImagePicker";
+import ImagePicker from "../../../components/ImagePicker";
 import { authStore } from "../../../store/auth";
-import Toast from "../../../components/toast/Toast";
-import Loading from "../../../components/loading/Loading";
+import Toast from "../../../components/Toast";
+import Loading from "../../../components/Loading";
 const Register: React.FC = () => {
   const { logIn } = authStore((store: any) => store);
 

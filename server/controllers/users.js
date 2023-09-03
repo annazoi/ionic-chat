@@ -1,4 +1,6 @@
 const User = require("../model/User");
+const bcrypt = require("bcryptjs");
+const cloudinary = require("../utils/cloudinary");
 
 const getUsers = async (req, res) => {
   try {
@@ -45,9 +47,17 @@ const updateUser = async (req, res) => {
 
     let query = { $set: {} };
     for (let key in req.body) {
-      if (user[key] && user[key] !== req.body[key])
-        // if the field we have in req.body exists, we're gonna update it
+      if (user[key] && user[key] !== req.body[key]) {
+        if (key == "password") {
+          req.body[key] = await bcrypt.hash(req.body[key], 10);
+        } else if (key == "avatar") {
+          const result = await cloudinary.uploader.upload(req.body[key], {
+            folder: "users",
+          });
+          req.body[key] = result.url;
+        }
         query.$set[key] = req.body[key];
+      }
     }
     const updatedUser = await User.updateOne(
       { _id: req.params.id },

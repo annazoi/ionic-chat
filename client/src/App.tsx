@@ -31,57 +31,58 @@ import "./theme/variables.css";
 import Login from "./pages/auth/login/Login";
 import Register from "./pages/auth/register/Register";
 import { homeOutline, chatbubblesOutline, cameraOutline } from "ionicons/icons";
-import Inbox from "./pages/inbox/Inbox";
+import Inbox from "./pages/Inbox/index";
 import Menu from "./pages/menu/Menu";
-import Users from "./components/users/Users";
-import Chat from "./pages/chat/Chat";
-import { getAuthState } from "./store/auth";
-import { get } from "react-hook-form";
+import Users from "./components/Users";
+import Chat from "./pages/Inbox/Chat";
+import { authStore } from "./store/auth";
+import Settings from "./pages/Inbox/Settings";
 setupIonicReact();
 
-const getIsloggedIn = () => {
-  const { isLoggedIn } = getAuthState();
-  return isLoggedIn;
-};
-
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
+const App: React.FC = () => {
+  const { isLoggedIn } = authStore((store): any => store);
+  return (
+    <IonApp>
+      <IonReactRouter>
         <IonRouterOutlet>
-          <Redirect exact path="/" to="/menu" />
-          <Route exact path="/menu">
-            <Menu />
-          </Route>
+          <Route component={Menu} path="/menu" exact />
+          <Route component={Register} path="/register" exact />
+          <Route component={Login} path="/login" exact />
 
-          <Route
-            component={Inbox}
-            path="/inbox"
-            exact={getIsloggedIn() && true}
-          />
-          <Route component={Register} path="/register" exact={true} />
-          <Route component={Login} path="/login" exact={true} />
-          <Route component={Chat} path="/chat/:chatId" exact={true} />
-          <Route component={Users} path="/users" exact={true} />
+          {isLoggedIn ? (
+            <>
+              <IonTabs>
+                <IonRouterOutlet>
+                  <Route component={Inbox} path="/inbox" exact />
+                  <Route component={Chat} path="/chat/:chatId" exact />
+                  <Route component={Users} path="/users" exact />
+                  <Route component={Settings} path="/settings" exact />
+
+                  <Redirect from="/" to="/inbox" exact />
+                </IonRouterOutlet>
+
+                <IonTabBar slot="bottom">
+                  {/* <IonTabButton tab="menu" href="/menu">
+                    <IonIcon icon={homeOutline}></IonIcon>
+                  </IonTabButton> */}
+
+                  <IonTabButton tab="inbox" href="/inbox">
+                    <IonIcon icon={chatbubblesOutline}></IonIcon>
+                  </IonTabButton>
+
+                  <IonTabButton tab="camera" href="/camera">
+                    <IonIcon icon={cameraOutline}></IonIcon>
+                  </IonTabButton>
+                </IonTabBar>
+              </IonTabs>
+            </>
+          ) : (
+            <Redirect from="/" to="/menu" exact />
+          )}
         </IonRouterOutlet>
-
-        {/* {getIsloggedIn() && ()} */}
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="menu" href="/menu">
-            <IonIcon icon={homeOutline}></IonIcon>
-          </IonTabButton>
-
-          <IonTabButton tab="inbox" href="/inbox">
-            <IonIcon icon={chatbubblesOutline}></IonIcon>
-          </IonTabButton>
-
-          <IonTabButton tab="camera" href="/camera">
-            <IonIcon icon={cameraOutline}></IonIcon>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;

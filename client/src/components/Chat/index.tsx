@@ -1,4 +1,4 @@
-import ExploreContainer from "../../components/ExploreContainer";
+import ExploreContainer from "../ExploreContainer";
 import { authStore } from "../../store/auth";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "../../services/users";
