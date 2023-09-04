@@ -23,13 +23,14 @@ import {
 import { authStore } from "../../store/auth";
 import { useQuery } from "@tanstack/react-query";
 import { useSocket } from "../../hooks/sockets";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addCircle, globe, logOut, settings } from "ionicons/icons";
 import { getChats } from "../../services/chat";
 import React from "react";
 import Users from "../../components/Users";
 import Modal from "./Modal";
 import Settings from "./Settings";
+import Loading from "../../components/Loading";
 
 const Inbox: React.FC = () => {
   const {
@@ -53,14 +54,6 @@ const Inbox: React.FC = () => {
   const { data, isSuccess, isLoading, error } = useQuery<any>({
     queryKey: ["chats"],
     queryFn: () => getChats(),
-    onSuccess: (data: any) => {
-      {
-        data?.chats.map((chat: any) => {
-          console.log("chat", chat);
-          socket?.emit("join_room", chat._id);
-        });
-      }
-    },
   });
 
   const handleLogout = () => {
@@ -95,37 +88,53 @@ const Inbox: React.FC = () => {
           </IonFabButton>
         </IonFabList>
       </IonFab>
-      <IonContent>
-        {data?.chats.map((chat: any) => (
-          <IonCard
-            key={chat._id}
-            routerLink={`/chat/${chat._id}`}
-            onClick={() => {
-              console.log("selected user", chat);
-              // joinChat(user.username);
-            }}
-          >
-            {chat?.members.map((member: any) => {
+      <IonContent className="ion-padding">
+        {isLoading && <Loading showLoading={isLoading} />}
+        {data?.chats?.length === 0 ? (
+          <IonCard>
+            <IonItem>
+              <IonLabel>
+                You have no chats yet. Click the button below to find a contact.
+              </IonLabel>
+            </IonItem>
+          </IonCard>
+        ) : (
+          <>
+            {data?.chats?.map((chat: any) => {
               return (
-                <div key={member._id}>
-                  {member._id !== userId && (
-                    <IonCardContent className="ion-no-padding">
-                      <IonItem lines="none">
-                        <IonAvatar slot="start">
-                          <IonImg src={member.avatar} />
-                        </IonAvatar>
-                        <IonLabel>{member.username}</IonLabel>
-                        <IonChip slot="end" color={"primary"}>
-                          {member.phone}
-                        </IonChip>
-                      </IonItem>
-                    </IonCardContent>
-                  )}
-                </div>
+                <IonCard
+                  key={chat._id}
+                  routerLink={`/chat/${chat._id}`}
+                  onClick={() => {
+                    console.log("selected user", chat);
+                    // joinChat(user.username);
+                  }}
+                >
+                  {chat.members.map((member: any) => {
+                    return (
+                      <div key={member._id}>
+                        {member._id !== userId && (
+                          <IonCardContent className="ion-no-padding">
+                            <IonItem lines="none">
+                              <IonAvatar slot="start">
+                                <IonImg src={member.avatar} />
+                              </IonAvatar>
+                              <IonLabel>{member.username}</IonLabel>
+                              <IonChip slot="end" color={"primary"}>
+                                {member.phone}
+                              </IonChip>
+                            </IonItem>
+                          </IonCardContent>
+                        )}
+                      </div>
+                    );
+                  })}
+                </IonCard>
               );
             })}
-          </IonCard>
-        ))}
+          </>
+        )}
+
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
           <IonFabButton
             size="small"

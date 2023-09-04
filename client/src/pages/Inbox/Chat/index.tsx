@@ -1,5 +1,9 @@
 import {
+  IonAvatar,
+  IonBackButton,
   IonButton,
+  IonButtons,
+  IonChip,
   IonContent,
   IonHeader,
   IonItem,
@@ -15,15 +19,21 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChatConfig } from "../../../validations-schemas/interfaces/chat";
 import { useParams } from "react-router";
 import { useState } from "react";
+import Loading from "../../../components/Loading";
+import { authStore } from "../../../store/auth";
 
 const Chat: React.FC<ChatConfig> = () => {
   const { chatId } = useParams<{ chatId: string }>();
   const [newMessage, setNewMessage] = useState<string>("");
 
+  const { userId } = authStore((store: any) => store);
+
   const { data, isSuccess, isLoading } = useQuery<any>({
     queryKey: ["chat"],
     queryFn: () => getChat(chatId),
   });
+
+  isSuccess && console.log("chat", data);
 
   const { mutate, isSuccess: isMessageSuccess } = useMutation({
     mutationFn: ({ chatId, newMessage }: any) =>
@@ -41,34 +51,46 @@ const Chat: React.FC<ChatConfig> = () => {
       { chatId, newMessage },
       {
         onSuccess: (data: any) => {
-          console.log("success", data);
+          // console.log("success", data);
         },
       }
     );
   };
 
-  // isSuccess && console.log("chat", data);
-
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Inbox</IonTitle>
+          <IonButtons slot="start">
+            <IonBackButton></IonBackButton>
+            {data?.chat.members.map((member: any) => {
+              return (
+                <div key={member._id}>
+                  {member._id !== userId && (
+                    <IonChip>
+                      <IonAvatar>
+                        <img src={member.avatar} alt="" />
+                      </IonAvatar>
+                      <IonLabel>{member.username}</IonLabel>
+                    </IonChip>
+                  )}
+                </div>
+              );
+            })}
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonHeader collapse="condense">
-        <IonToolbar>
-          <IonTitle size="large">Blank</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent class="ion-padding">
-        {isSuccess &&
-          data?.chat.messages.map((message: any) => (
+      <IonContent>
+        <Loading showLoading={isLoading} />
+        {data?.chat.messages.map((message: any) => {
+          return (
             <IonItem key={message._id}>
+              <IonLabel>{message.senderId.username}</IonLabel>
               <IonLabel>{message.message}</IonLabel>
               <IonLabel>{message.createdAt}</IonLabel>
             </IonItem>
-          ))}
+          );
+        })}
 
         <input
           type="text"

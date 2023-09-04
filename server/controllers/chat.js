@@ -33,7 +33,7 @@ const getChats = async (req, res) => {
 const getChat = async (req, res) => {
   try {
     const chat = await Chat.findById(req.params.chatId).populate(
-      "members creatorId",
+      "members creatorId messages.senderId",
       "-password"
     );
     res.status(200).json({ message: "ok", chat: chat });

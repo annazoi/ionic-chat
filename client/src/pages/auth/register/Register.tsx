@@ -74,6 +74,7 @@ const Register: React.FC = () => {
           setMessage("Form submitted successfully!");
           setShowToast(true);
           router.push("/inbox");
+          window.location.reload();
         },
         onError: (error) => {
           console.log("Could not create user", error);

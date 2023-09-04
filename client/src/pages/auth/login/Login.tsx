@@ -11,8 +11,8 @@ import {
   IonCardContent,
   IonCol,
   IonRow,
-  IonBackButton,
-  IonButtons,
+  IonAvatar,
+  IonImg,
 } from "@ionic/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -25,10 +25,13 @@ import { loginSchema } from "../../../validations-schemas/auth";
 import HidePassword from "../../../components/HidePassword";
 import Toast from "../../../components/Toast";
 import Loading from "../../../components/Loading";
+import Logo from "../../../assets/logo.png";
+import "./style.css";
 
 const Login: React.FC = () => {
   const router = useIonRouter();
-  const { isLoggedIn, logIn } = authStore((store: any) => store);
+
+  const { logIn } = authStore((store: any) => store);
 
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
@@ -54,6 +57,7 @@ const Login: React.FC = () => {
       mutate(data, {
         onSuccess: (data: any) => {
           console.log("success", data);
+
           logIn({
             token: data.token,
             userId: data.userId,
@@ -62,7 +66,8 @@ const Login: React.FC = () => {
           });
           setMessage("Form submitted successfully!");
           setShowToast(true);
-          router.push("/inbox");
+          router.push("/inbox", "forward", "replace");
+          window.location.reload();
         },
 
         onError: (error: any) => {
@@ -78,15 +83,13 @@ const Login: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton></IonBackButton>
-          </IonButtons>
           <IonTitle>Sign</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         <IonRow class="ion-justify-content-center">
           <IonCol size="12" sizeMd="8" sizeLg="6" sizeXl="4">
+            <IonImg src={Logo} alt="logo" class="ion-padding"></IonImg>
             <IonCard>
               <IonCardContent>
                 <Loading showLoading={isLoading} />
