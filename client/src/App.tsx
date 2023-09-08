@@ -37,6 +37,7 @@ import Users from "./components/Users";
 import Chat from "./pages/Inbox/Chat";
 import { authStore } from "./store/auth";
 import Settings from "./pages/Inbox/Settings";
+import Account from "./pages/Inbox/Settings/Account";
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -57,6 +58,7 @@ const App: React.FC = () => {
                   <Route path="/chat/:chatId" component={Chat} />
                   <Route path="/users" component={Users} />
                   <Route path="/settings" component={Settings} />
+                  <Route path="/account" component={Account} />
                   <Redirect exact from="/" to="/inbox" />
                 </IonRouterOutlet>
                 <IonTabBar slot="bottom">

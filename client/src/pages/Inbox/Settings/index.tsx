@@ -1,175 +1,68 @@
-import {
-  IonButton,
-  IonCard,
-  IonCardContent,
-  IonContent,
-  IonInput,
-} from "@ionic/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { IonCard, IonContent, IonIcon, IonItem } from "@ionic/react";
 import React, { useState } from "react";
-import { getUser, updateUser } from "../../../services/users";
 import { authStore } from "../../../store/auth";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { logIn } from "ionicons/icons";
-import { get, set, useForm } from "react-hook-form";
-import ImagePicker from "../../../components/ImagePicker";
-import Loading from "../../../components/Loading";
-import Toast from "../../../components/Toast";
-import { registerSchema } from "../../../validations-schemas/auth";
-import { RegisterConfig } from "../../../validations-schemas/interfaces/user";
-import { useEffect } from "react";
+import { arrowForward, eye, logIn, settings } from "ionicons/icons";
+
+import Modal from "../Modal";
+import Account from "./Account";
 
 interface SettingsProps {
   opened: boolean;
 }
 
 const Settings: React.FC<SettingsProps> = ({ opened }) => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset,
-    getValues,
-    formState: { errors },
-  } = useForm<RegisterConfig>({
-    // defaultValues: {
-    //   phone: "",
-    //   username: "",
-    //   password: "",
-    //   avatar: "",
-    // },
-    resolver: yupResolver(registerSchema),
-  });
+  const { avatar } = authStore((store: any) => store);
 
-  const { userId, updateUser: updateStoreUser } = authStore(
-    (store: any) => store
-  );
-  const [showToast, setShowToast] = useState<boolean>(false);
-  const [message, setMessage] = useState<any>("");
-
-  // const { data: userData, isSuccess: userSuccess } = useQuery({
-  //   queryKey: ["user"],
-  //   queryFn: () => getUser(userId),
-  //   onSuccess: (data: any) => {
-  //     console.log("user", data.user);
-  //     reset(data?.user);
-  //     setUser(data?.user);
-  //   },
-  // });
-
-  const {
-    mutate: userMutate,
-    isLoading: isUserLoading,
-    error: userError,
-  } = useMutation({
-    mutationKey: ["user"],
-    mutationFn: (userId: string) => getUser(userId),
-  });
-
-  const { mutate, isLoading, error } = useMutation({
-    mutationKey: ["updateUser"],
-    mutationFn: (newData: any) => updateUser(userId, newData),
-  });
-
-  const handleImage = (avatar: string) => {
-    setValue("avatar", avatar);
-  };
-
-  useEffect(() => {
-    try {
-      userMutate(userId, {
-        onSuccess: (data: any) => {
-          console.log("user", data.user);
-          reset(data?.user);
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  const onSubmit = (data: RegisterConfig) => {
-    try {
-      mutate(data, {
-        onSuccess: (data: any) => {
-          updateStoreUser({
-            avatar: data?.user.avatar,
-            username: data?.user.username,
-          });
-          console.log("success", data);
-          setMessage("Form submitted successfully!");
-          setShowToast(true);
-        },
-        onError: (error) => {
-          console.log("Could not create user", error);
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [openAccount, setOpenAccount] = useState<boolean>(false);
 
   return (
     <IonContent>
+      <div style={{ textAlign: "center", padding: "20px" }}>
+        <img
+          src={avatar}
+          style={{
+            borderRadius: "50%",
+            width: "20%",
+            border: "black 2px solid",
+          }}
+        ></img>
+      </div>
       <IonCard>
-        <IonCardContent>
-          {isLoading && <Loading showLoading={isLoading} />}
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <IonInput
-              fill="outline"
-              labelPlacement="floating"
-              label="Enter Phone"
-              className="ion-margin-top"
-              {...register("phone", { required: true })}
-            />
-            {errors.phone && (
-              <p style={{ color: "red" }}>{errors.phone?.message}</p>
-            )}
-
-            <IonInput
-              fill="outline"
-              labelPlacement="floating"
-              label="Enter Username"
-              className="ion-margin-top"
-              {...register("username", { required: true })}
-            />
-            {errors.username && (
-              <p style={{ color: "red" }}>{errors.username?.message}</p>
-            )}
-
-            <IonInput
-              fill="outline"
-              labelPlacement="floating"
-              label="Enter New Password"
-              className="ion-margin-top"
-              type="password"
-              {...register("password", { required: true })}
-            />
-            {errors.password && (
-              <p style={{ color: "red" }}>{errors.password?.message}</p>
-            )}
-            <ImagePicker
-              onChange={handleImage}
-              register={register}
-              value={getValues("avatar")}
-            ></ImagePicker>
-
-            <IonButton
-              id="open-toast"
-              type="submit"
-              className="ion-margin-top"
-              expand="block"
-            >
-              Confirm Changes
-            </IonButton>
-          </form>
-          <Toast
-            showToast={showToast}
-            message={message}
-            setShowToast={setShowToast}
-          />
-        </IonCardContent>
+        <IonItem
+          onClick={() => {
+            setOpenAccount(true);
+          }}
+        >
+          <IonIcon
+            icon={eye}
+            slot="start"
+            className="ion-no-margin"
+            style={{ paddingRight: "15px" }}
+          ></IonIcon>
+          Active Status
+          <IonIcon slot="end" icon={arrowForward}></IonIcon>
+        </IonItem>
+        <IonItem
+          onClick={() => {
+            setOpenAccount(true);
+          }}
+        >
+          <IonIcon
+            icon={settings}
+            slot="start"
+            className="ion-no-margin"
+            style={{ paddingRight: "15px" }}
+          ></IonIcon>
+          Account Settings
+          <IonIcon slot="end" icon={arrowForward}></IonIcon>
+        </IonItem>
       </IonCard>
+      <Modal
+        isOpen={openAccount}
+        onClose={setOpenAccount}
+        title="Account Settings"
+        component={Account}
+      ></Modal>
     </IonContent>
   );
 };

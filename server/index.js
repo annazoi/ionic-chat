@@ -12,6 +12,7 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 const http = require("http").Server(app);
 const io = require("socket.io");
+const { Socket } = require("dgram");
 
 // app.use(formidable());
 app.use(express.json({ limit: "50mb" }));
@@ -45,8 +46,9 @@ socket.on("connection", (socket) => {
   });
 
   socket.on("send_message", (data) => {
-    console.log(data);
-    socket.to(data.room).emit("receive_message", data);
+    socket.in(data.room).emit("receive_message", data);
+    // socket.to(data.room).emit("receive_message", data);
+    console.log("receive_message", data);
   });
 
   socket.on("disconnect", () => {

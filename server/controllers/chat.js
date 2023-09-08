@@ -44,7 +44,10 @@ const getChat = async (req, res) => {
 
 const createMessage = async (req, res) => {
   try {
-    const chat = await Chat.findById(req.params.chatId);
+    const chat = await Chat.findById(req.params.chatId).populate(
+      "members creatorId messages.senderId",
+      "-password"
+    );
     chat.messages.push({
       senderId: req.userId,
       message: req.body.message,

@@ -2,9 +2,7 @@ import {
   IonAvatar,
   IonButton,
   IonCard,
-  IonCardContent,
   IonChip,
-  IonCol,
   IonContent,
   IonFab,
   IonFabButton,
@@ -15,8 +13,6 @@ import {
   IonItem,
   IonLabel,
   IonPage,
-  IonRow,
-  IonSearchbar,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -31,6 +27,7 @@ import Users from "../../components/Users";
 import Modal from "./Modal";
 import Settings from "./Settings";
 import Loading from "../../components/Loading";
+import { arrowForward } from "ionicons/icons";
 
 const Inbox: React.FC = () => {
   const {
@@ -41,13 +38,6 @@ const Inbox: React.FC = () => {
   } = authStore((store: any) => store);
   const { socket } = useSocket();
 
-  const joinRoom = () => {
-    socket?.emit("join_room", room);
-    setShowChat(true);
-    console.log("socket connected: ", socket.connected);
-  };
-  const [room, setRoom] = useState<string>("");
-  const [showChat, setShowChat] = useState<boolean>(false);
   const [openSearch, setOpenSearch] = useState<boolean>(false);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
 
@@ -64,13 +54,14 @@ const Inbox: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>{usernameStore}'s Inbox</IonTitle>
+          <IonTitle>{usernameStore}'s inbox</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonFab slot="fixed" horizontal="end" edge={true}>
         <IonFabButton size="small">
           <img src={avatar} alt="" style={{ width: "100%" }}></img>
         </IonFabButton>
+        s
         <IonFabList side="bottom">
           <IonFabButton
             onClick={() => {
@@ -103,28 +94,27 @@ const Inbox: React.FC = () => {
             {data?.chats?.map((chat: any) => {
               return (
                 <IonCard
+                  className="ion-no-margin"
                   key={chat._id}
                   routerLink={`/chat/${chat._id}`}
                   onClick={() => {
                     console.log("selected user", chat);
-                    // joinChat(user.username);
+                    // joinRoom(chat._id);
                   }}
                 >
                   {chat.members.map((member: any) => {
                     return (
                       <div key={member._id}>
                         {member._id !== userId && (
-                          <IonCardContent className="ion-no-padding">
-                            <IonItem lines="none">
-                              <IonAvatar slot="start">
-                                <IonImg src={member.avatar} />
-                              </IonAvatar>
-                              <IonLabel>{member.username}</IonLabel>
-                              <IonChip slot="end" color={"primary"}>
-                                {member.phone}
-                              </IonChip>
-                            </IonItem>
-                          </IonCardContent>
+                          <IonItem lines="none">
+                            <IonAvatar slot="start">
+                              <IonImg src={member.avatar} />
+                            </IonAvatar>
+                            <IonLabel>{member.username}</IonLabel>
+                            {/* <IonChip slot="end" color={"primary"}> */}
+                            <IonIcon icon={arrowForward}></IonIcon>
+                            {/* </IonChip> */}
+                          </IonItem>
                         )}
                       </div>
                     );

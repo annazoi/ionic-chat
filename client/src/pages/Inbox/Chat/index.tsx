@@ -6,55 +6,99 @@ import {
   IonChip,
   IonContent,
   IonHeader,
-  IonItem,
   IonLabel,
-  IonList,
   IonPage,
-  IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../../../components/ExploreContainer";
 import { getChat, sendMessage } from "../../../services/chat";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChatConfig } from "../../../validations-schemas/interfaces/chat";
 import { useParams } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loading from "../../../components/Loading";
 import { authStore } from "../../../store/auth";
+import { useSocket } from "../../../hooks/sockets";
+import "./style.css";
+import MessageBox from "../../../components/MessageBox";
 
 const Chat: React.FC<ChatConfig> = () => {
   const { chatId } = useParams<{ chatId: string }>();
   const [newMessage, setNewMessage] = useState<string>("");
+  const [showTime, setShowTime] = useState<boolean>(false);
 
   const { userId } = authStore((store: any) => store);
+  const { socket } = useSocket();
 
   const { data, isSuccess, isLoading } = useQuery<any>({
     queryKey: ["chat"],
     queryFn: () => getChat(chatId),
   });
 
-  isSuccess && console.log("chat", data);
-
   const { mutate, isSuccess: isMessageSuccess } = useMutation({
     mutationFn: ({ chatId, newMessage }: any) =>
       sendMessage(chatId, newMessage),
   });
-
-  const handleEnterPress = (event: any) => {
-    if (event.key === "Enter") {
-      sendNewMessage();
-    }
-  };
 
   const sendNewMessage = () => {
     mutate(
       { chatId, newMessage },
       {
         onSuccess: (data: any) => {
-          // console.log("success", data);
+          console.log("success", data);
+        },
+        onError: (error: any) => {
+          console.log("error", error);
+        },
+        onSettled: () => {
+          if (newMessage !== "") {
+            const messageData = {
+              room: chatId,
+              message: newMessage,
+
+              // userId: userId,
+            };
+            socket?.emit("send_message", messageData);
+            data?.chat.messages.push({
+              message: newMessage,
+              senderId: userId,
+              // _id: userId,
+              // createdAt: new Date(),
+              // userId: userId,
+            });
+          }
+          setNewMessage("");
         },
       }
     );
+  };
+
+  useEffect(() => {
+    const data = {
+      room: chatId,
+    };
+    if (socket?.connected) {
+      socket?.emit("join_room", data);
+    }
+    console.log(data, "data from room");
+  }, [socket]);
+
+  useEffect(() => {
+    if (socket?.connected) {
+      socket?.on("receive_message", (data: any) => {
+        data?.chat.messages.push({
+          message: data?.message,
+          senderId: data?.senderId,
+          createdAt: data?.createdAt,
+        });
+        console.log("data from receive message", data);
+      });
+    }
+  }, [socket]);
+
+  const handleEnterPress = (event: any) => {
+    if (event.key === "Enter") {
+      sendNewMessage();
+    }
   };
 
   return (
@@ -83,19 +127,12 @@ const Chat: React.FC<ChatConfig> = () => {
       <IonContent>
         <Loading showLoading={isLoading} />
         {data?.chat.messages.map((message: any) => {
-          return (
-            <IonItem key={message._id}>
-              <IonLabel>{message.senderId.username}</IonLabel>
-              <IonLabel>{message.message}</IonLabel>
-              <IonLabel>{message.createdAt}</IonLabel>
-            </IonItem>
-          );
+          return <MessageBox key={message._id} message={message}></MessageBox>;
         })}
-
         <input
           type="text"
           value={newMessage}
-          placeholder="Hey..."
+          placeholder="Aa"
           onKeyDown={handleEnterPress}
           onChange={(event) => {
             setNewMessage(event.target.value);
