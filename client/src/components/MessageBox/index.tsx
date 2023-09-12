@@ -43,15 +43,16 @@ const MessageBox: React.FC<MessageConfig> = ({ message }) => {
         </IonCardHeader>
       </IonCard>
       {timeOpen && (
-        <div
+        <IonCardSubtitle
           className={
             userId === message.senderId._id
               ? "toggle-time-sender"
               : "toggle-time-other"
           }
+          color="dark"
         >
-          <IonCardSubtitle color="dark">{message.createdAt}</IonCardSubtitle>
-        </div>
+          {message.createdAt}
+        </IonCardSubtitle>
       )}
     </>
   );

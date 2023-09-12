@@ -61,7 +61,6 @@ const Inbox: React.FC = () => {
         <IonFabButton size="small">
           <img src={avatar} alt="" style={{ width: "100%" }}></img>
         </IonFabButton>
-        s
         <IonFabList side="bottom">
           <IonFabButton
             onClick={() => {

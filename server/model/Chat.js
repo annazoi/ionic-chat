@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("../model/User");
+const moment = require("moment-timezone");
+moment.tz.setDefault("Europe/Athens");
 
 const messageSchema = mongoose.Schema(
   {
