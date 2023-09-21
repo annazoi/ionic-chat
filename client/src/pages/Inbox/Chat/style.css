@@ -1,0 +1,5 @@
+.send-message {
+  display: flex;
+  gap: 10px;
+  padding: 30px;
+}

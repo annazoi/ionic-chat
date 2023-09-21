@@ -36,10 +36,16 @@ const Inbox: React.FC = () => {
 
   const [openSearch, setOpenSearch] = useState<boolean>(false);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
+  const [chats, setChats] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
 
   const { data, isLoading, error } = useQuery<any>({
     queryKey: ["chats"],
     queryFn: () => getChats(),
+    onSuccess: (res: any) => {
+      console.log("chats", res.chats);
+      setChats(res.chats);
+    },
   });
 
   const handleLogout = () => {
@@ -106,9 +112,7 @@ const Inbox: React.FC = () => {
                               <IonImg src={member.avatar} />
                             </IonAvatar>
                             <IonLabel>{member.username}</IonLabel>
-                            {/* <IonChip slot="end" color={"primary"}> */}
                             <IonIcon icon={arrowForward}></IonIcon>
-                            {/* </IonChip> */}
                           </IonItem>
                         )}
                       </div>

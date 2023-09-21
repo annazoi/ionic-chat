@@ -5,12 +5,18 @@ import {
   IonButtons,
   IonChip,
   IonContent,
+  IonFab,
+  IonFabButton,
   IonHeader,
+  IonIcon,
   IonInput,
+  IonItem,
   IonLabel,
   IonPage,
+  IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { arrowBack, send } from "ionicons/icons";
 import { getChat, sendMessage } from "../../../services/chat";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChatConfig } from "../../../validations-schemas/interfaces/chat";
@@ -51,7 +57,7 @@ const Chat: React.FC<ChatConfig> = () => {
         onSuccess: (res: any) => {
           console.log("success mutate", res);
           const messageData = res.chat.messages[res.chat.messages.length - 1];
-          setMessages(res.chat.messages);
+          // setMessages(res.chat.messages);
           socket?.emit("send_message", messageData);
           setMessages((prevMessages) => [...prevMessages, messageData]);
           setNewMessage("");
@@ -62,13 +68,6 @@ const Chat: React.FC<ChatConfig> = () => {
       }
     );
   };
-
-  // const gotoButton = () => {
-  //   let y = document.getElementById("row-" + text)?.offsetTop;
-  //   console.log(y);
-  //   let content = document.querySelector("ion-content") as any;
-  //   content.scrollToPoint(0, y);
-  // };
 
   useEffect(() => {
     let lastMessage: any = document?.getElementById?.(`${messages.length - 1}`);
@@ -101,22 +100,19 @@ const Chat: React.FC<ChatConfig> = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton></IonBackButton>
-            {/* <IonInput
-              value={text}
-              placeholder="Enter Row Number"
-              onIonChange={(e: any) => setText(e.detail.value)}
-            /> */}
+            <IonButton routerLink="/inbox">
+              <IonIcon icon={arrowBack} size="large"></IonIcon>
+            </IonButton>
             {data?.chat.members.map((member: any, index: any) => {
               return (
                 <div key={index} id={index}>
                   {member._id !== userId && (
-                    <IonChip>
+                    <IonItem>
                       <IonAvatar>
                         <img src={member.avatar} alt="" />
                       </IonAvatar>
-                      <IonLabel>{member.username}</IonLabel>
-                    </IonChip>
+                      <IonTitle>{member.username}</IonTitle>
+                    </IonItem>
                   )}
                 </div>
               );
@@ -124,14 +120,7 @@ const Chat: React.FC<ChatConfig> = () => {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent
-      // scrollEvents={true}
-      // onIonScrollStart={(_e) => {
-      //   console.log(_e);
-      // }}
-      // onIonScroll={() => {}}
-      // onIonScrollEnd={() => {}}
-      >
+      <IonContent>
         <Loading showLoading={isLoading} />
         {messages.map((message: any, index: any) => {
           return (
@@ -140,16 +129,25 @@ const Chat: React.FC<ChatConfig> = () => {
             </div>
           );
         })}
-        <input
-          type="text"
-          value={newMessage}
-          placeholder="Aa"
-          onKeyDown={handleEnterPress}
-          onChange={(event) => {
-            setNewMessage(event.target.value);
-          }}
-        />
-        <IonButton onClick={sendNewMessage}>&#9658;</IonButton>
+
+        <IonItem>
+          <IonInput
+            type="text"
+            value={newMessage}
+            placeholder="Aa"
+            onKeyDown={handleEnterPress}
+            onIonChange={(event: any) => {
+              setNewMessage(event.target.value);
+            }}
+          />
+
+          <IonButton onClick={sendNewMessage} expand="block" fill="clear">
+            <IonIcon icon={send}></IonIcon>
+          </IonButton>
+          {/* <IonFab slot="end">
+            <IonFabButton></IonFabButton>
+          </IonFab> */}
+        </IonItem>
       </IonContent>
     </IonPage>
   );

@@ -7,6 +7,7 @@ import {
   IonCol,
   IonContent,
   IonHeader,
+  IonIcon,
   IonInput,
   IonPage,
   IonRow,
@@ -26,6 +27,7 @@ import ImagePicker from "../../../components/ImagePicker";
 import { authStore } from "../../../store/auth";
 import Toast from "../../../components/Toast";
 import Loading from "../../../components/Loading";
+import { arrowBack } from "ionicons/icons";
 const Register: React.FC = () => {
   const { logIn } = authStore((store: any) => store);
 
@@ -91,9 +93,11 @@ const Register: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton></IonBackButton>
+            <IonButton routerLink="/login">
+              <IonIcon icon={arrowBack} size="large"></IonIcon>
+            </IonButton>
           </IonButtons>
-          <IonTitle>Register</IonTitle>
+          <IonTitle class="ion-no-padding">Register</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
