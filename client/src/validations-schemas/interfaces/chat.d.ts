@@ -3,7 +3,4 @@ export interface ChatConfig {
   users: string[];
 }
 
-export interface CreateChatConfig {
-  name: string;
-  users: string[];
-}
+

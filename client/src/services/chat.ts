@@ -1,7 +1,14 @@
-import { CreateChatConfig } from "../validations-schemas/interfaces/chat";
 import Axios from "axios";
 import { API_URL } from "../constants";
 import { getAuthState } from "../store/auth";
+
+interface CreateChatConfig {
+  name: string;
+  type: string;
+  avatar: string
+  members: string[];
+
+}
 
 const getConfig = () => {
   return {
@@ -14,12 +21,11 @@ const getConfig = () => {
 export const createChat = async (payload: CreateChatConfig) => {
   try {
     const response = await Axios.post(`${API_URL}/chat`, {
-      name: payload.name,
-      users: payload.users,
-    });
+      ...payload, 
+    }, getConfig());
     return response.data;
   } catch (err: any) {
-    console.log("err", err);
+    console.log("err", err);  
     return err;
   }
 };

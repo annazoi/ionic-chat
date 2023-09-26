@@ -1,13 +1,15 @@
 import {
   IonAvatar,
+  IonButton,
   IonCard,
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
 } from "@ionic/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { authStore } from "../../store/auth";
 import "./style.css";
+import { set } from "react-hook-form";
 interface MessageConfig {
   message: any;
 }
@@ -15,15 +17,28 @@ interface MessageConfig {
 const MessageBox: React.FC<MessageConfig> = ({ message }) => {
   const { userId } = authStore((store: any) => store);
   const [timeOpen, setTimeOpen] = useState<boolean>(false);
+  const [messageData, setMessageData] = useState<boolean>(false);
 
   const toggleTime = () => {
     setTimeOpen(!timeOpen);
   };
 
+  const messageChoise = () => {
+    setMessageData(!messageData);
+  }
+
+  const handleTextClick = (event: React.MouseEvent<HTMLParagraphElement>) => {
+    event.stopPropagation(); // Stop event propagation
+    alert('Text content clicked');
+  };
+
+  const textRef = useRef(null); 
+
   return (
     <>
       <IonCard
         onClick={toggleTime}
+        // onClick={messageChoise}
         className={
           userId === message.senderId._id ? "sender-message" : "other-message"
         }
@@ -39,9 +54,10 @@ const MessageBox: React.FC<MessageConfig> = ({ message }) => {
           <IonCardSubtitle color="dark">
             {message.senderId.username}
           </IonCardSubtitle>
-          <IonCardTitle>{message.message}</IonCardTitle>
+          <IonCardTitle > <p  onClick={handleTextClick}>{message.message}</p></IonCardTitle>
         </IonCardHeader>
       </IonCard>
+      
       {timeOpen && (
         <IonCardSubtitle
           className={

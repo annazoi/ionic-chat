@@ -29,15 +29,16 @@
   color: black;
   margin-left: 120px;
   background-color: #f5f5f5;
+  /* word-wrap: break-word; */
 }
 
-.sender-message:hover {
+/* .sender-message:hover {
   transform: scale(1.05);
-}
+} */
 
 .sender-message:active {
   transform: scale(0.95);
-}
+} 
 
 .other-message {
   box-sizing: border-box;
@@ -52,9 +53,9 @@
   background-color: #709651;
 }
 
-.other-message:hover {
+/* .other-message:hover {
   transform: scale(1.05);
-}
+} */
 
 .other-message:active {
   transform: scale(0.95);

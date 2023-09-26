@@ -47,7 +47,9 @@ const Chat: React.FC<ChatConfig> = () => {
   const { mutate } = useMutation({
     mutationFn: ({ chatId, newMessage }: any) =>
       sendMessage(chatId, newMessage),
-  });
+  }); 
+
+  const messageData = messages[messages.length - 1]
 
   const sendNewMessage = () => {
     if (newMessage === "") return;
@@ -84,10 +86,10 @@ const Chat: React.FC<ChatConfig> = () => {
 
   useEffect(() => {
     socket?.on("receive_message", (message: any) => {
-      console.log("receive_message", message);
+      // console.log("receive_message", message);
       setMessages((prevMessages) => [...prevMessages, message]);
     });
-  }, [socket]);
+  }, [socket, messageData]);
 
   const handleEnterPress = (event: any) => {
     if (event.key === "Enter") {
@@ -135,7 +137,7 @@ const Chat: React.FC<ChatConfig> = () => {
             type="text"
             value={newMessage}
             placeholder="Aa"
-            onKeyDown={handleEnterPress}
+            onKeyPress={handleEnterPress}
             onIonChange={(event: any) => {
               setNewMessage(event.target.value);
             }}

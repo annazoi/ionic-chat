@@ -34,6 +34,7 @@ import { homeOutline, chatbubblesOutline, cameraOutline } from "ionicons/icons";
 import Inbox from "./pages/Inbox/index";
 import Menu from "./pages/menu/Menu";
 import Users from "./components/Users";
+import Group from "./components/Group";
 import Chat from "./pages/Inbox/Chat";
 import { authStore } from "./store/auth";
 import Settings from "./pages/Inbox/Settings";

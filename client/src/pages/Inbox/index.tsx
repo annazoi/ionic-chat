@@ -25,6 +25,7 @@ import Modal from "./Modal";
 import Settings from "./Settings";
 import Loading from "../../components/Loading";
 import { arrowForward } from "ionicons/icons";
+import Group from "../../components/Group";
 
 const Inbox: React.FC = () => {
   const {
@@ -139,9 +140,11 @@ const Inbox: React.FC = () => {
       <Modal
         isOpen={openSearch}
         onClose={setOpenSearch}
-        title="Find Contact"
+        title="New Message"
         component={Users}
       ></Modal>
+
+
 
       <Modal
         isOpen={openSettings}
