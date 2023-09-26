@@ -15,8 +15,9 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
-import { arrowBack, send } from "ionicons/icons";
+import { arrowBack, send, sync } from "ionicons/icons";
 import { getChat, sendMessage } from "../../../services/chat";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChatConfig } from "../../../validations-schemas/interfaces/chat";
@@ -36,10 +37,13 @@ const Chat: React.FC<ChatConfig> = () => {
   const { userId } = authStore((store: any) => store);
   const { socket } = useSocket();
 
+  const router = useIonRouter();
+
   const { data, isLoading } = useQuery<any>({
     queryKey: ["chat"],
-    queryFn: () => getChat(chatId),
-    onSuccess: (res: any) => {
+    queryFn: async () => await getChat(chatId),
+    onSuccess: async (res: any) => {
+      await getChat(chatId);
       setMessages(res.chat.messages);
       console.log("chat query", res.chat.messages);
     },
@@ -47,9 +51,9 @@ const Chat: React.FC<ChatConfig> = () => {
   const { mutate } = useMutation({
     mutationFn: ({ chatId, newMessage }: any) =>
       sendMessage(chatId, newMessage),
-  }); 
+  });
 
-  const messageData = messages[messages.length - 1]
+  const messageData = messages[messages.length - 1];
 
   const sendNewMessage = () => {
     if (newMessage === "") return;
@@ -102,7 +106,12 @@ const Chat: React.FC<ChatConfig> = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton routerLink="/inbox">
+            <IonButton
+              onClick={() => {
+                router.push("/inbox", "forward", "replace");
+                window.location.reload();
+              }}
+            >
               <IonIcon icon={arrowBack} size="large"></IonIcon>
             </IonButton>
             {data?.chat.members.map((member: any, index: any) => {

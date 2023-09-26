@@ -43,19 +43,23 @@ const Inbox: React.FC = () => {
 
   const { socket } = useSocket();
 
+  const getAllChats = async () => {
+    await getChats();
+  };
+
   const { data, isLoading, error } = useQuery<any>({
     queryKey: ["chats"],
-    queryFn: async () => await getChats(),
+    queryFn: () => getChats(),
     onSuccess: (res: any) => {
+      // getAllChats();
       console.log("chats", res.chats);
-
       setChats(res.chats);
     },
   });
 
   const join_room = (chatId: string) => {
     socket.emit("join_room", chatId);
-  }
+  };
 
   const handleLogout = () => {
     logOutUser();
@@ -101,63 +105,65 @@ const Inbox: React.FC = () => {
           </IonCard>
         ) : (
           <>
-            {data?.chats?.map((chat: any, index:any) => {
+            {data?.chats?.map((chat: any, index: any) => {
               return (
                 <div key={index}>
-                {chat.type === "private" ? (      
-                <IonCard
-                  className="ion-no-margin"
-                  routerLink={`/chat/${chat._id}`}
-                  onClick={() => {
-                    console.log("selected chat", chat);
-                    join_room(chat._id);
-
-                  }}
-                >
-                  {chat.members.map((member: any) => {
-                    return (
-                      <div key={member._id}>
-                        {member._id !== userId && (
-                          <IonItem lines="none">
-                            <IonAvatar slot="start">
-                              <IonImg src={member.avatar} />
-                            </IonAvatar>
-                            <IonLabel>{member.username}</IonLabel>
-                            <IonIcon icon={arrowForward}></IonIcon>
-                          </IonItem>
-                        )}
-                      </div>
-                    );
-                  })}
-                </IonCard>) : (<IonCard
-                  className="ion-no-margin"
-                  routerLink={`/chat/${chat._id}`}
-                  onClick={() => {
-                    console.log("selected chat", chat);
-                    
-                  }}
-                >
-                  <IonItem lines="none">
-                    <IonAvatar slot="start">
-                      <IonImg src={chat.avatar} />
-                    </IonAvatar>
-                    <IonLabel>{chat.name}</IonLabel>
-                      <IonIcon icon={arrowForward}></IonIcon>
-                  </IonItem>
-                </IonCard>) }
+                  {chat.type === "private" ? (
+                    <IonCard
+                      className="ion-no-margin"
+                      routerLink={`/chat/${chat._id}`}
+                      onClick={() => {
+                        console.log("selected chat", chat);
+                        join_room(chat._id);
+                      }}
+                    >
+                      {chat.members.map((member: any) => {
+                        return (
+                          <div key={member._id}>
+                            {member._id !== userId && (
+                              <IonItem lines="none">
+                                <IonAvatar slot="start">
+                                  <IonImg src={member.avatar} />
+                                </IonAvatar>
+                                <IonLabel>{member.username}</IonLabel>
+                                <IonIcon icon={arrowForward}></IonIcon>
+                              </IonItem>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </IonCard>
+                  ) : (
+                    <IonCard
+                      className="ion-no-margin"
+                      routerLink={`/chat/${chat._id}`}
+                      onClick={() => {
+                        console.log("selected chat", chat);
+                      }}
+                    >
+                      <IonItem lines="none">
+                        <IonAvatar slot="start">
+                          <IonImg src={chat.avatar} />
+                        </IonAvatar>
+                        <IonLabel>{chat.name}</IonLabel>
+                        <IonIcon icon={arrowForward}></IonIcon>
+                      </IonItem>
+                    </IonCard>
+                  )}
                 </div>
-          
               );
             })}
           </>
         )}
 
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonIcon icon={create} size="large" 
+          <IonIcon
+            icon={create}
+            size="large"
             onClick={() => {
               setOpenSearch(true);
-            }}>
-          </IonIcon>
+            }}
+          ></IonIcon>
         </IonFab>
       </IonContent>
 
@@ -167,7 +173,6 @@ const Inbox: React.FC = () => {
         title="New Message"
         component={Users}
       ></Modal>
-
 
       <Modal
         isOpen={openSettings}
