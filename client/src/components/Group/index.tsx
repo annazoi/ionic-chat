@@ -1,8 +1,9 @@
 
 import { IonAvatar, IonCard, IonCardContent, IonCheckbox, IonChip, IonContent, IonHeader, IonImg, IonItem, IonLabel, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { getUsers } from '../../services/users';
+import { createChat } from '../../services/chat';
 
 const Group: React.FC = () => {
 
@@ -10,6 +11,8 @@ const Group: React.FC = () => {
         queryKey: ["users"],
         queryFn: () => getUsers(),
       });
+
+
 
     return (
       

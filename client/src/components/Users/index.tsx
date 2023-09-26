@@ -21,7 +21,7 @@ import Chat from "../Chat";
 import { authStore } from "../../store/auth";
 import { useParams } from "react-router";
 import { createChat } from "../../services/chat";
-import ConfirmModal from "../../pages/Inbox/Modal";
+import ConfirmModal from "../ConfirmModal/index";
 import Group from "../Group";
 
 const Users: React.FC = () => {
@@ -54,12 +54,14 @@ const Users: React.FC = () => {
     );
   };
 
-  const createGroupChat = () => {
+const createGroupChat = () => {
     let name="group";
     let avatar = "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png";
     let type = "group"; 
+    let members = data?.users.map((user:any) => user._id);
+    console.log(members);
     mutate(
-      {name, type, avatar, members: [...userId]},
+      {name, type, avatar, members},
       {
         onSuccess: (res: any) => {
           console.log("success mutate", res);
@@ -67,8 +69,6 @@ const Users: React.FC = () => {
       }
     );
   }
-
-
 
   isSuccess && console.log("all users", data);
 
@@ -78,14 +78,14 @@ const Users: React.FC = () => {
       {isLoggedIn && (
         <>
           <IonCardContent>
-            <IonSearchbar></IonSearchbar>
-            <IonButton onClick={()=>{
+            <IonSearchbar ></IonSearchbar>
+            <IonButton style={{marginLeft: "8px"}} onClick={()=>{
               setOpenGroupModal(true);
             }}>
             Create a Group
             </IonButton>
             {isSuccess &&
-              data?.users.map((user: any) => (
+              data?.users.map((user: any) => (  
                 <IonCard
                   key={user._id}
                   // routerLink={`/chat/${chatId}`}
@@ -115,6 +115,7 @@ const Users: React.FC = () => {
     <ConfirmModal
     isOpen={openGroupModal}
     onClose={setOpenGroupModal}
+    onClick={createGroupChat}
     title="New Group"
     component={Group}
     ></ConfirmModal>

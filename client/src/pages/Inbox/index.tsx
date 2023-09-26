@@ -16,8 +16,8 @@ import {
 } from "@ionic/react";
 import { authStore } from "../../store/auth";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { addCircle, globe, logOut, settings } from "ionicons/icons";
+import { useEffect, useState } from "react";
+import { addCircle, create, globe, logOut, settings } from "ionicons/icons";
 import { getChats } from "../../services/chat";
 import React from "react";
 import Users from "../../components/Users";
@@ -26,6 +26,7 @@ import Settings from "./Settings";
 import Loading from "../../components/Loading";
 import { arrowForward } from "ionicons/icons";
 import Group from "../../components/Group";
+import { useSocket } from "../../hooks/sockets";
 
 const Inbox: React.FC = () => {
   const {
@@ -40,14 +41,21 @@ const Inbox: React.FC = () => {
   const [chats, setChats] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
 
+  const { socket } = useSocket();
+
   const { data, isLoading, error } = useQuery<any>({
     queryKey: ["chats"],
-    queryFn: () => getChats(),
+    queryFn: async () => await getChats(),
     onSuccess: (res: any) => {
       console.log("chats", res.chats);
+
       setChats(res.chats);
     },
   });
+
+  const join_room = (chatId: string) => {
+    socket.emit("join_room", chatId);
+  }
 
   const handleLogout = () => {
     logOutUser();
@@ -93,15 +101,17 @@ const Inbox: React.FC = () => {
           </IonCard>
         ) : (
           <>
-            {data?.chats?.map((chat: any) => {
+            {data?.chats?.map((chat: any, index:any) => {
               return (
+                <div key={index}>
+                {chat.type === "private" ? (      
                 <IonCard
                   className="ion-no-margin"
-                  key={chat._id}
                   routerLink={`/chat/${chat._id}`}
                   onClick={() => {
-                    console.log("selected user", chat);
-                    // joinRoom(chat._id);
+                    console.log("selected chat", chat);
+                    join_room(chat._id);
+
                   }}
                 >
                   {chat.members.map((member: any) => {
@@ -119,21 +129,35 @@ const Inbox: React.FC = () => {
                       </div>
                     );
                   })}
-                </IonCard>
+                </IonCard>) : (<IonCard
+                  className="ion-no-margin"
+                  routerLink={`/chat/${chat._id}`}
+                  onClick={() => {
+                    console.log("selected chat", chat);
+                    
+                  }}
+                >
+                  <IonItem lines="none">
+                    <IonAvatar slot="start">
+                      <IonImg src={chat.avatar} />
+                    </IonAvatar>
+                    <IonLabel>{chat.name}</IonLabel>
+                      <IonIcon icon={arrowForward}></IonIcon>
+                  </IonItem>
+                </IonCard>) }
+                </div>
+          
               );
             })}
           </>
         )}
 
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton
-            size="small"
+          <IonIcon icon={create} size="large" 
             onClick={() => {
               setOpenSearch(true);
-            }}
-          >
-            <img src={addCircle} alt="" style={{ width: "100%" }}></img>
-          </IonFabButton>
+            }}>
+          </IonIcon>
         </IonFab>
       </IonContent>
 
@@ -143,7 +167,6 @@ const Inbox: React.FC = () => {
         title="New Message"
         component={Users}
       ></Modal>
-
 
 
       <Modal

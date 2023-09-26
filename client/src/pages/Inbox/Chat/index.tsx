@@ -41,7 +41,7 @@ const Chat: React.FC<ChatConfig> = () => {
     queryFn: () => getChat(chatId),
     onSuccess: (res: any) => {
       setMessages(res.chat.messages);
-      console.log("query: messages", res.chat.messages);
+      console.log("chat query", res.chat.messages);
     },
   });
   const { mutate } = useMutation({
