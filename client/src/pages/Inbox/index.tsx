@@ -39,7 +39,6 @@ const Inbox: React.FC = () => {
   const [openSearch, setOpenSearch] = useState<boolean>(false);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
   const [chats, setChats] = useState<any[]>([]);
-  const [messages, setMessages] = useState<any[]>([]);
 
   const { socket } = useSocket();
 
@@ -49,7 +48,7 @@ const Inbox: React.FC = () => {
 
   const { data, isLoading, error } = useQuery<any>({
     queryKey: ["chats"],
-    queryFn: () => getChats(),
+    queryFn: getChats,
     onSuccess: (res: any) => {
       // getAllChats();
       console.log("chats", res.chats);
@@ -57,7 +56,7 @@ const Inbox: React.FC = () => {
     },
   });
 
-  const join_room = (chatId: string) => {
+  const joinRoom = (chatId: string) => {
     socket.emit("join_room", chatId);
   };
 
@@ -114,7 +113,7 @@ const Inbox: React.FC = () => {
                       routerLink={`/chat/${chat._id}`}
                       onClick={() => {
                         console.log("selected chat", chat);
-                        join_room(chat._id);
+                        joinRoom(chat._id);
                       }}
                     >
                       {chat.members.map((member: any) => {
@@ -138,6 +137,7 @@ const Inbox: React.FC = () => {
                       className="ion-no-margin"
                       routerLink={`/chat/${chat._id}`}
                       onClick={() => {
+                        joinRoom(chat._id);
                         console.log("selected chat", chat);
                       }}
                     >

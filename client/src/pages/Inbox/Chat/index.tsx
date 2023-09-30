@@ -26,8 +26,8 @@ import { useEffect, useRef, useState } from "react";
 import Loading from "../../../components/Loading";
 import { authStore } from "../../../store/auth";
 import { useSocket } from "../../../hooks/sockets";
-import "./style.css";
 import MessageBox from "../../../components/MessageBox";
+import "./style.css";
 
 const Chat: React.FC<ChatConfig> = () => {
   const { chatId } = useParams<{ chatId: string }>();
@@ -41,11 +41,11 @@ const Chat: React.FC<ChatConfig> = () => {
 
   const { data, isLoading } = useQuery<any>({
     queryKey: ["chat"],
-    queryFn: async () => await getChat(chatId),
-    onSuccess: async (res: any) => {
-      await getChat(chatId);
-      setMessages(res.chat.messages);
+    refetchOnMount: "always",
+    queryFn: () => getChat(chatId),
+    onSuccess: (res: any) => {
       console.log("chat query", res.chat.messages);
+      setMessages(res.chat.messages);
     },
   });
   const { mutate } = useMutation({
@@ -106,14 +106,9 @@ const Chat: React.FC<ChatConfig> = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton
-              onClick={() => {
-                router.push("/inbox", "forward", "replace");
-                window.location.reload();
-              }}
-            >
+            <IonBackButton defaultHref="/inbox">
               <IonIcon icon={arrowBack} size="large"></IonIcon>
-            </IonButton>
+            </IonBackButton>
             {data?.chat.members.map((member: any, index: any) => {
               return (
                 <div key={index} id={index}>
@@ -151,13 +146,9 @@ const Chat: React.FC<ChatConfig> = () => {
               setNewMessage(event.target.value);
             }}
           />
-
           <IonButton onClick={sendNewMessage} expand="block" fill="clear">
             <IonIcon icon={send}></IonIcon>
           </IonButton>
-          {/* <IonFab slot="end">
-            <IonFabButton></IonFabButton>
-          </IonFab> */}
         </IonItem>
       </IonContent>
     </IonPage>
