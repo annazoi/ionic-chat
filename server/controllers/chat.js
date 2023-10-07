@@ -72,4 +72,27 @@ const createMessage = async (req, res) => {
   }
 };
 
-module.exports = { createChat, getChats, getChat, createMessage };
+const updateChat = async (req, res) => {
+  try {
+    const chat = await Chat.findById(req.params.chatId);
+    if (!chat)
+      return res.status(404).json({
+        message: "The Chat with the given ID was not found.",
+        chat: null,
+      });
+
+    let query = { $set: {} };
+    for (let key in req.body) {
+      query.$set[key] = req.body[key];
+    }
+    await Chat.updateOne({ _id: req.params.chatId }, query).exec();
+
+    const updatedChat = await Chat.findById(req.params.chatId).exec();
+
+    res.status(201).json({ message: "ok", chat: updatedChat });
+  } catch (err) {
+    res.status(404).json({ message: err, chat: null });
+  }
+};
+
+module.exports = { createChat, getChats, getChat, createMessage, updateChat };

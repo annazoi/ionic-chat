@@ -6,11 +6,7 @@ import { arrowForward, eye, logIn, settings } from "ionicons/icons";
 import Modal from "../Modal";
 import Account from "./Account";
 
-interface SettingsProps {
-  opened: boolean;
-}
-
-const Settings: React.FC<SettingsProps> = ({ opened }) => {
+const Settings: React.FC = () => {
   const { avatar } = authStore((store: any) => store);
 
   const [openAccount, setOpenAccount] = useState<boolean>(false);
@@ -61,8 +57,9 @@ const Settings: React.FC<SettingsProps> = ({ opened }) => {
         isOpen={openAccount}
         onClose={setOpenAccount}
         title="Account Settings"
-        component={Account}
-      ></Modal>
+      >
+        <Account />
+      </Modal>
     </IonContent>
   );
 };

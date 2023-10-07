@@ -4,41 +4,38 @@ import { getUsers } from "../../services/users";
 import {
   IonCard,
   IonCardContent,
-  IonCol,
   IonContent,
-  IonRow,
   IonSearchbar,
   IonAvatar,
   IonItem,
   IonLabel,
   IonImg,
-  IonChip,
   IonButton,
   useIonRouter,
+  IonIcon,
 } from "@ionic/react";
+import { chatbubblesOutline } from "ionicons/icons";
 import React from "react";
-import { useSocket } from "../../hooks/sockets";
-import Chat from "../Chat";
 import { authStore } from "../../store/auth";
 import { useParams } from "react-router";
 import { createChat } from "../../services/chat";
 import ConfirmModal from "../ConfirmModal/index";
 import Group from "../Group";
-import Modal from "../../pages/Inbox/Modal";
-import { set } from "react-hook-form";
 
-const Users: React.FC = () => {
+interface UsersProps {
+  closeModal: any;
+}
+
+const Users: React.FC<UsersProps> = (closeModal) => {
   const { userId, isLoggedIn } = authStore((store: any) => store);
 
-  const { data, isSuccess } = useQuery({
+  const { data } = useQuery({
     queryKey: ["users"],
     queryFn: () => getUsers(),
   });
 
-  const { socket } = useSocket();
   const { chatId } = useParams<{ chatId: string }>();
   const [openGroupModal, setOpenGroupModal] = React.useState<boolean>(false);
-  const [openSearch, setOpenSearch] = React.useState<boolean>(false);
 
   const router = useIonRouter();
 
@@ -55,10 +52,7 @@ const Users: React.FC = () => {
       { name, type, avatar, members: [userId, memberId] },
       {
         onSuccess: (res: any) => {
-          console.log("success mutate", res);
           router.push(`/chat/${res.chat._id}`);
-          setOpenSearch(false);
-          // window.location.reload();
         },
       }
     );
@@ -67,21 +61,24 @@ const Users: React.FC = () => {
   const createGroupChat = () => {
     let name = "group";
     let avatar =
-      "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png";
+      "https://e7.pngegg.com/pngimages/367/168/png-clipart-computer-icons-business-symbol-consulting-firm-organization-complimentary-business-area.png";
     let type = "group";
     let members = data?.users.map((user: any) => user._id);
-    console.log(members);
+    console.log("members", members);
     mutate(
       { name, type, avatar, members },
       {
         onSuccess: (res: any) => {
-          console.log("success mutate", res);
+          setOpenGroupModal(false);
+          router.push(`/chat/${res.chat._id}`);
         },
       }
     );
   };
 
-  isSuccess && console.log("all users", data);
+  const filteredUsers = (data: any) => {
+    return data?.users.filter((user: any) => user._id !== userId);
+  };
 
   return (
     <>
@@ -98,30 +95,26 @@ const Users: React.FC = () => {
               >
                 Create a Group
               </IonButton>
-              {isSuccess &&
-                data?.users.map((user: any) => (
-                  <IonCard
-                    key={user._id}
-                    // routerLink={`/chat/${chatId}`}
-                    onClick={() => {
-                      console.log("selected user", user);
-                      console.log(`userId: ${user._id}`);
-                      createPrivateChat(user._id);
-                    }}
-                  >
-                    <IonCardContent className="ion-no-padding">
-                      <IonItem lines="none">
-                        <IonAvatar slot="start">
-                          <IonImg src={user.avatar} />
-                        </IonAvatar>
-                        <IonLabel>{user.username}</IonLabel>
-                        <IonChip slot="end" color={"primary"}>
-                          {user.phone}
-                        </IonChip>
-                      </IonItem>
-                    </IonCardContent>
-                  </IonCard>
-                ))}
+              {data?.users.map((user: any) => (
+                <IonCard
+                  key={user._id}
+                  onClick={() => {
+                    console.log("selected user", user);
+                    createPrivateChat(user._id);
+                    closeModal.closeModal(false);
+                  }}
+                >
+                  <IonCardContent className="ion-no-padding">
+                    <IonItem lines="none">
+                      <IonAvatar slot="start">
+                        <IonImg src={user.avatar} />
+                      </IonAvatar>
+                      <IonLabel>{user.username}</IonLabel>
+                      <IonIcon icon={chatbubblesOutline}></IonIcon>
+                    </IonItem>
+                  </IonCardContent>
+                </IonCard>
+              ))}
             </IonCardContent>
           </>
         )}
@@ -131,14 +124,10 @@ const Users: React.FC = () => {
         onClose={setOpenGroupModal}
         onClick={createGroupChat}
         title="New Group"
-        component={Group}
-      ></ConfirmModal>
-      <Modal
-        isOpen={openSearch}
-        onClose={setOpenSearch}
-        title="New Message"
-        component={Users}
-      ></Modal>
+        closeModal={closeModal}
+      >
+        <Group />
+      </ConfirmModal>
     </>
   );
 };

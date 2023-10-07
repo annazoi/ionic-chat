@@ -20,11 +20,7 @@ import { registerSchema } from "../../../../validations-schemas/auth";
 import { RegisterConfig } from "../../../../validations-schemas/interfaces/user";
 import { useEffect } from "react";
 
-interface SettingsProps {
-  opened: boolean;
-}
-
-const Settings: React.FC<SettingsProps> = ({ opened }) => {
+const Settings: React.FC = () => {
   const {
     register,
     handleSubmit,

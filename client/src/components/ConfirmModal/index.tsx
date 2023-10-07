@@ -1,22 +1,23 @@
 import {
   IonButton,
   IonButtons,
+  IonContent,
   IonHeader,
   IonIcon,
   IonModal,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import React, { Children, Component } from "react";
 import "./style.css";
 import { arrowBack } from "ionicons/icons";
 
 interface ConfirmModalProps {
   isOpen: any;
   title: string;
-  component: any;
   onClose: any;
   onClick?: any;
+  children?: any;
+  closeModal?: any;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -24,7 +25,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onClose,
   title,
   onClick,
-  component: Component,
+  children,
+  closeModal,
 }) => {
   return (
     <IonModal isOpen={isOpen}>
@@ -44,6 +46,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             <IonButton
               onClick={() => {
                 onClick();
+                onClose(false);
+                closeModal.closeModal(false);
               }}
             >
               CREATE
@@ -51,7 +55,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <Component opened={isOpen} />
+      <IonContent>{children}</IonContent>
     </IonModal>
   );
 };

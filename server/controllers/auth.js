@@ -7,6 +7,11 @@ const register = async (req, res, next) => {
   const { phone, username, password, avatar } = req.body;
   console.log(req.body);
 
+  if (avatar === "") {
+    return (avatar =
+      "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
+  }
+
   let existingUser;
   try {
     existingUser = await User.findOne({

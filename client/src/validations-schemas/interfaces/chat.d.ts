@@ -1,6 +1,8 @@
 export interface ChatConfig {
   name: string;
-  users: string[];
+  type?: string;
+  avatar: string;
+  messages?: any[];
+  members?: any[];
+  creatorId?: string;
 }
-
-

@@ -1,5 +1,7 @@
 import {
   IonAvatar,
+  IonButton,
+  IonButtons,
   IonCard,
   IonContent,
   IonFab,
@@ -17,7 +19,14 @@ import {
 import { authStore } from "../../store/auth";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { addCircle, create, globe, logOut, settings } from "ionicons/icons";
+import {
+  addCircle,
+  create,
+  globe,
+  logOut,
+  settings,
+  sync,
+} from "ionicons/icons";
 import { getChats } from "../../services/chat";
 import React from "react";
 import Users from "../../components/Users";
@@ -64,16 +73,29 @@ const Inbox: React.FC = () => {
     logOutUser();
   };
 
+  const refresh = () => {
+    window.location.reload();
+  };
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonTitle>{usernameStore}'s inbox</IonTitle>
+          <IonButtons slot="start">
+            <IonButton
+              onClick={() => {
+                refresh();
+              }}
+            >
+              <IonIcon icon={sync}></IonIcon>
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonFab slot="fixed" horizontal="end" edge={true}>
         <IonFabButton size="small">
-          <img src={avatar} alt="" style={{ width: "100%" }}></img>
+          <img src={avatar} alt="" style={{ borderRadius: "50px" }}></img>
         </IonFabButton>
         <IonFabList side="bottom">
           <IonFabButton
@@ -92,7 +114,7 @@ const Inbox: React.FC = () => {
           </IonFabButton>
         </IonFabList>
       </IonFab>
-      <IonContent className="ion-padding">
+      <IonContent>
         {isLoading && <Loading showLoading={isLoading} />}
         {data?.chats?.length === 0 ? (
           <IonCard>
@@ -109,16 +131,16 @@ const Inbox: React.FC = () => {
                 <div key={index}>
                   {chat.type === "private" ? (
                     <IonCard
-                      className="ion-no-margin"
+                      className="ion-no-margin ion-no-padding"
                       routerLink={`/chat/${chat._id}`}
                       onClick={() => {
                         console.log("selected chat", chat);
                         joinRoom(chat._id);
                       }}
                     >
-                      {chat.members.map((member: any) => {
+                      {chat.members.map((member: any, index: any) => {
                         return (
-                          <div key={member._id}>
+                          <div key={index}>
                             {member._id !== userId && (
                               <IonItem lines="none">
                                 <IonAvatar slot="start">
@@ -167,19 +189,17 @@ const Inbox: React.FC = () => {
         </IonFab>
       </IonContent>
 
-      <Modal
-        isOpen={openSearch}
-        onClose={setOpenSearch}
-        title="New Message"
-        component={Users}
-      ></Modal>
+      <Modal isOpen={openSearch} onClose={setOpenSearch} title="New Message">
+        <Users
+          closeModal={() => {
+            setOpenSearch(false);
+          }}
+        />
+      </Modal>
 
-      <Modal
-        isOpen={openSettings}
-        onClose={setOpenSettings}
-        title="Settings"
-        component={Settings}
-      ></Modal>
+      <Modal isOpen={openSettings} onClose={setOpenSettings} title="Settings">
+        <Settings />
+      </Modal>
     </IonPage>
   );
 };

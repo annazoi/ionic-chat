@@ -3,24 +3,29 @@ import {
   IonBackButton,
   IonButton,
   IonButtons,
-  IonChip,
   IonContent,
   IonFab,
   IonFabButton,
+  IonFabList,
   IonHeader,
   IonIcon,
   IonInput,
   IonItem,
-  IonLabel,
   IonPage,
   IonTitle,
   IonToolbar,
   useIonRouter,
 } from "@ionic/react";
-import { arrowBack, send, sync } from "ionicons/icons";
-import { getChat, sendMessage } from "../../../services/chat";
+import {
+  arrowBack,
+  send,
+  sync,
+  peopleOutline,
+  informationOutline,
+  imagesOutline,
+} from "ionicons/icons";
+import { getChat, sendMessage, updatedChat } from "../../../services/chat";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { ChatConfig } from "../../../validations-schemas/interfaces/chat";
 import { useParams } from "react-router";
 import { useEffect, useRef, useState } from "react";
 import Loading from "../../../components/Loading";
@@ -28,11 +33,15 @@ import { authStore } from "../../../store/auth";
 import { useSocket } from "../../../hooks/sockets";
 import MessageBox from "../../../components/MessageBox";
 import "./style.css";
+import Modal from "../Modal";
 
-const Chat: React.FC<ChatConfig> = () => {
+import ChatOptions from "../../../components/ChatOptions";
+
+const Chat: React.FC = () => {
   const { chatId } = useParams<{ chatId: string }>();
   const [newMessage, setNewMessage] = useState<string>("");
   const [messages, setMessages] = useState<any[]>([]);
+  const [openMembers, setOpenMembers] = useState<boolean>(false);
 
   const { userId } = authStore((store: any) => store);
   const { socket } = useSocket();
@@ -90,7 +99,6 @@ const Chat: React.FC<ChatConfig> = () => {
 
   useEffect(() => {
     socket?.on("receive_message", (message: any) => {
-      // console.log("receive_message", message);
       setMessages((prevMessages) => [...prevMessages, message]);
     });
   }, [socket, messageData]);
@@ -109,23 +117,56 @@ const Chat: React.FC<ChatConfig> = () => {
             <IonBackButton defaultHref="/inbox">
               <IonIcon icon={arrowBack} size="large"></IonIcon>
             </IonBackButton>
-            {data?.chat.members.map((member: any, index: any) => {
-              return (
-                <div key={index} id={index}>
-                  {member._id !== userId && (
-                    <IonItem>
-                      <IonAvatar>
-                        <img src={member.avatar} alt="" />
-                      </IonAvatar>
-                      <IonTitle>{member.username}</IonTitle>
-                    </IonItem>
-                  )}
-                </div>
-              );
-            })}
+
+            {data?.chat.type === "private" ? (
+              <>
+                {data?.chat.members.map((member: any, index: any) => {
+                  return (
+                    <div key={index} id={index}>
+                      {member._id !== userId && (
+                        <IonItem>
+                          <IonAvatar>
+                            <img src={member.avatar} alt="" />
+                          </IonAvatar>
+                          <IonTitle>{member.username}</IonTitle>
+                        </IonItem>
+                      )}
+                    </div>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                <IonItem>
+                  <IonAvatar>
+                    <img src={data?.chat.avatar} alt="" />
+                  </IonAvatar>
+                  <IonTitle>{data?.chat.name}</IonTitle>
+                </IonItem>
+              </>
+            )}
           </IonButtons>
         </IonToolbar>
       </IonHeader>
+      <IonFab slot="fixed" horizontal="end">
+        <IonFabButton size="small">
+          <IonIcon icon={informationOutline}></IonIcon>
+        </IonFabButton>
+        <IonFabList side="bottom">
+          <IonFabButton>
+            <IonIcon icon={imagesOutline}></IonIcon>
+          </IonFabButton>
+          {data?.chat.type === "group" && (
+            <IonFabButton
+              onClick={() => {
+                setOpenMembers(!openMembers);
+              }}
+            >
+              <IonIcon icon={peopleOutline}></IonIcon>
+            </IonFabButton>
+          )}
+        </IonFabList>
+      </IonFab>
       <IonContent>
         <Loading showLoading={isLoading} />
         {messages.map((message: any, index: any) => {
@@ -151,6 +192,22 @@ const Chat: React.FC<ChatConfig> = () => {
           </IonButton>
         </IonItem>
       </IonContent>
+      <Modal isOpen={openMembers} onClose={setOpenMembers} title="Members">
+        <ChatOptions></ChatOptions>
+
+        {data?.chat.members.map((member: any, index: any) => {
+          return (
+            <div key={index} id={index}>
+              <IonItem>
+                <IonAvatar>
+                  <img src={member.avatar} alt="" />
+                </IonAvatar>
+                <IonTitle>{member.username}</IonTitle>
+              </IonItem>
+            </div>
+          );
+        })}
+      </Modal>
     </IonPage>
   );
 };

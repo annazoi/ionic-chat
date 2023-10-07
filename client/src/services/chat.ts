@@ -5,9 +5,8 @@ import { getAuthState } from "../store/auth";
 interface CreateChatConfig {
   name: string;
   type: string;
-  avatar: string
+  avatar: string;
   members: string[];
-
 }
 
 const getConfig = () => {
@@ -20,12 +19,16 @@ const getConfig = () => {
 
 export const createChat = async (payload: CreateChatConfig) => {
   try {
-    const response = await Axios.post(`${API_URL}/chat`, {
-      ...payload, 
-    }, getConfig());
+    const response = await Axios.post(
+      `${API_URL}/chat`,
+      {
+        ...payload,
+      },
+      getConfig()
+    );
     return response.data;
   } catch (err: any) {
-    console.log("err", err);  
+    console.log("err", err);
     return err;
   }
 };
@@ -53,6 +56,20 @@ export const sendMessage = async (id: string, message: string) => {
     const response = await Axios.post(
       `${API_URL}/chat/${id}/message`,
       { message },
+      getConfig()
+    );
+    return response.data;
+  } catch (err: any) {
+    console.log("err", err);
+    return err;
+  }
+};
+
+export const updatedChat = async (id: string, payload: any) => {
+  try {
+    const response = await Axios.put(
+      `${API_URL}/chat/${id}`,
+      { ...payload },
       getConfig()
     );
     return response.data;
