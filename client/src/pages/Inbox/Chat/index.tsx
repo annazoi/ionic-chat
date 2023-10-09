@@ -57,7 +57,7 @@ const Chat: React.FC = () => {
       setMessages(res.chat.messages);
     },
   });
-  const { mutate } = useMutation({
+  const { mutate, isLoading: messageIsLoading } = useMutation({
     mutationFn: ({ chatId, newMessage }: any) =>
       sendMessage(chatId, newMessage),
   });
@@ -187,6 +187,7 @@ const Chat: React.FC = () => {
               setNewMessage(event.target.value);
             }}
           />
+          <Loading showLoading={messageIsLoading} />
           <IonButton onClick={sendNewMessage} expand="block" fill="clear">
             <IonIcon icon={send}></IonIcon>
           </IonButton>

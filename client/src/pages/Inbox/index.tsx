@@ -34,7 +34,6 @@ import Modal from "./Modal";
 import Settings from "./Settings";
 import Loading from "../../components/Loading";
 import { arrowForward } from "ionicons/icons";
-import Group from "../../components/Group";
 import { useSocket } from "../../hooks/sockets";
 
 const Inbox: React.FC = () => {

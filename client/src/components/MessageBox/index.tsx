@@ -1,6 +1,5 @@
 import {
   IonAvatar,
-  IonButton,
   IonCard,
   IonCardHeader,
   IonCardSubtitle,
@@ -9,7 +8,7 @@ import {
 import React, { useRef, useState } from "react";
 import { authStore } from "../../store/auth";
 import "./style.css";
-import { set } from "react-hook-form";
+
 interface MessageConfig {
   message: any;
 }
@@ -25,14 +24,17 @@ const MessageBox: React.FC<MessageConfig> = ({ message }) => {
 
   const messageChoise = () => {
     setMessageData(!messageData);
-  }
-
-  const handleTextClick = (event: React.MouseEvent<HTMLParagraphElement>) => {
-    event.stopPropagation(); // Stop event propagation
-    alert('Text content clicked');
   };
 
-  const textRef = useRef(null); 
+  // const handleTextClick = (
+  //   event: React.MouseEvent<HTMLParagraphElement>,
+  //   copiedMessage: any
+  // ) => {
+  //   event.stopPropagation(); // Stop event propagation
+  //   alert(copiedMessage);
+  // };
+
+  const textRef = useRef(null);
 
   return (
     <>
@@ -54,10 +56,19 @@ const MessageBox: React.FC<MessageConfig> = ({ message }) => {
           <IonCardSubtitle color="dark">
             {message.senderId.username}
           </IonCardSubtitle>
-          <IonCardTitle > <p  onClick={handleTextClick}>{message.message}</p></IonCardTitle>
+          <IonCardTitle>
+            <p
+              onClick={(event: React.MouseEvent<HTMLParagraphElement>) => {
+                event.stopPropagation(); // Stop event propagation
+                alert(message.message);
+              }}
+            >
+              {message.message}
+            </p>
+          </IonCardTitle>
         </IonCardHeader>
       </IonCard>
-      
+
       {timeOpen && (
         <IonCardSubtitle
           className={

@@ -16,6 +16,8 @@ import { useParams } from "react-router";
 import { updatedChat, getChat } from "../../services/chat";
 import { chatSchema } from "../../validations-schemas/chat";
 import { ChatConfig } from "../../validations-schemas/interfaces/chat";
+import Loading from "../Loading";
+import Toast from "../Toast";
 
 const ChatOptions: React.FC = () => {
   const { chatId } = useParams<{ chatId: string }>();
@@ -75,6 +77,7 @@ const ChatOptions: React.FC = () => {
         padding: "20px",
       }}
     >
+      <Loading showLoading={updatedIsLoading || isChatLoading} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <ImagePicker
           onChange={handleImage}
