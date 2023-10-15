@@ -28,8 +28,7 @@ export const createChat = async (payload: CreateChatConfig) => {
     );
     return response.data;
   } catch (err: any) {
-    console.log("err", err);
-    return err;
+    return err.response.data;
   }
 };
 export const getChats = async () => {
@@ -37,7 +36,6 @@ export const getChats = async () => {
     const response = await Axios.get(`${API_URL}/chat`, getConfig());
     return response.data;
   } catch (err: any) {
-    console.log("err", err);
     return err;
   }
 };

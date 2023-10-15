@@ -46,8 +46,6 @@ const Chat: React.FC = () => {
   const { userId } = authStore((store: any) => store);
   const { socket } = useSocket();
 
-  const router = useIonRouter();
-
   const { data, isLoading } = useQuery<any>({
     queryKey: ["chat"],
     refetchOnMount: "always",
@@ -62,27 +60,16 @@ const Chat: React.FC = () => {
       sendMessage(chatId, newMessage),
   });
 
-  const messageData = messages[messages.length - 1];
+  useEffect(() => {
+    socket?.emit("join_room", chatId);
+  }, [socket]);
 
-  const sendNewMessage = () => {
-    if (newMessage === "") return;
-    mutate(
-      { chatId, newMessage },
-      {
-        onSuccess: (res: any) => {
-          console.log("success mutate", res);
-          const messageData = res.chat.messages[res.chat.messages.length - 1];
-          // setMessages(res.chat.messages);
-          socket?.emit("send_message", messageData);
-          setMessages((prevMessages) => [...prevMessages, messageData]);
-          setNewMessage("");
-        },
-        onError: (error: any) => {
-          console.log("error", error);
-        },
-      }
-    );
-  };
+  useEffect(() => {
+    socket?.on("receive_message", (message: any) => {
+      console.log("receive_message", message);
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+  }, [socket]);
 
   useEffect(() => {
     let lastMessage: any = document?.getElementById?.(`${messages.length - 1}`);
@@ -93,15 +80,27 @@ const Chat: React.FC = () => {
     });
   }, [messages]);
 
-  useEffect(() => {
-    socket?.emit("join_room", chatId);
-  }, [socket]);
-
-  useEffect(() => {
-    socket?.on("receive_message", (message: any) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
-  }, [socket, messageData]);
+  const sendNewMessage = () => {
+    if (newMessage === "") return;
+    mutate(
+      { chatId, newMessage },
+      {
+        onSuccess: (res: any) => {
+          console.log("success mutate", res);
+          const messageData = {
+            ...res.chat.messages[res.chat.messages.length - 1],
+            room: chatId,
+          };
+          socket?.emit("send_message", messageData);
+          setMessages((prevMessages) => [...prevMessages, messageData]);
+          setNewMessage("");
+        },
+        onError: (error: any) => {
+          console.log("error", error);
+        },
+      }
+    );
+  };
 
   const handleEnterPress = (event: any) => {
     if (event.key === "Enter") {

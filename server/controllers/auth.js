@@ -60,7 +60,7 @@ const register = async (req, res, next) => {
         username: createdUser.username,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "" }
     );
     res
       .status(201)
@@ -113,9 +113,7 @@ const login = async (req, res, next) => {
 
   let token;
   try {
-    token = jwt.sign({ userId: existingUser.id }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
-    });
+    token = jwt.sign({ userId: existingUser.id }, process.env.JWT_SECRET);
   } catch (err) {
     return res
       .status(400)

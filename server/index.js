@@ -63,8 +63,6 @@ socket.on("connection", (socket) => {
       socket.to(data.room).emit("receive_message", data);
       console.log("receive_message", data);
     });
-
-  
   });
 
   socket.on("disconnect", () => {

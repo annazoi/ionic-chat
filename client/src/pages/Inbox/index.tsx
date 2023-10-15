@@ -18,15 +18,8 @@ import {
 } from "@ionic/react";
 import { authStore } from "../../store/auth";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import {
-  addCircle,
-  create,
-  globe,
-  logOut,
-  settings,
-  sync,
-} from "ionicons/icons";
+import { useState } from "react";
+import { create, globe, logOut, settings, sync } from "ionicons/icons";
 import { getChats } from "../../services/chat";
 import React from "react";
 import Users from "../../components/Users";
@@ -46,21 +39,15 @@ const Inbox: React.FC = () => {
 
   const [openSearch, setOpenSearch] = useState<boolean>(false);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
-  const [chats, setChats] = useState<any[]>([]);
 
   const { socket } = useSocket();
 
-  const getAllChats = async () => {
-    await getChats();
-  };
-
-  const { data, isLoading, error } = useQuery<any>({
+  const { data, isLoading } = useQuery<any>({
     queryKey: ["chats"],
     queryFn: getChats,
+    refetchOnMount: "always",
     onSuccess: (res: any) => {
-      // getAllChats();
       console.log("chats", res.chats);
-      setChats(res.chats);
     },
   });
 

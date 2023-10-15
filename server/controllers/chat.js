@@ -2,7 +2,17 @@ const Chat = require("../model/Chat");
 
 const createChat = async (req, res) => {
   const { name, type, avatar, members } = req.body;
-  console.log(req.body);
+
+  if (type === "private") {
+    const existingChat = await Chat.find({
+      members: { $all: members },
+      type: "private",
+    });
+    if (existingChat.length > 0) {
+      console.log(existingChat);
+      return res.status(400).json({ exist: true, chatId: existingChat[0]._id });
+    }
+  }
 
   try {
     const chat = await Chat.create({

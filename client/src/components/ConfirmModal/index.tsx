@@ -17,7 +17,6 @@ interface ConfirmModalProps {
   onClose: any;
   onClick?: any;
   children?: any;
-  closeModal?: any;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -26,7 +25,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   title,
   onClick,
   children,
-  closeModal,
 }) => {
   return (
     <IonModal isOpen={isOpen}>
@@ -46,8 +44,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             <IonButton
               onClick={() => {
                 onClick();
-                onClose(false);
-                closeModal.closeModal(false);
               }}
             >
               CREATE
