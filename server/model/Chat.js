@@ -20,7 +20,6 @@ const messageSchema = mongoose.Schema(
 const chatSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true,
   },
   type: {
     type: String,

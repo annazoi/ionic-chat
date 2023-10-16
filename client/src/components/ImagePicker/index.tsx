@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from "react";
-import { IonAvatar } from "@ionic/react";
 import "./style.css";
 
 const ImagePicker = ({ name = "image", onChange, value }: any) => {

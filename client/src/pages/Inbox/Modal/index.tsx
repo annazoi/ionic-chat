@@ -7,25 +7,25 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-// import React, { Children, Component } from "react";
+import "./style.css";
 
 interface ModalProps {
   isOpen: any;
   title: string;
-  // component?: any;
   onClose: any;
   children?: any;
+  closeModal: any;
 }
 
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   title,
-  // component: Component,
   children,
+  closeModal,
 }) => {
   return (
-    <IonModal isOpen={isOpen}>
+    <IonModal isOpen={isOpen} onDidDismiss={closeModal}>
       <IonHeader>
         <IonToolbar>
           <IonTitle>{title}</IonTitle>
@@ -40,7 +40,6 @@ const Modal: React.FC<ModalProps> = ({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      {/* {Component && <Component />} */}
 
       <IonContent>{children}</IonContent>
     </IonModal>

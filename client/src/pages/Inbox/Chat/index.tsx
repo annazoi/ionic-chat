@@ -23,6 +23,7 @@ import {
   peopleOutline,
   informationOutline,
   imagesOutline,
+  people,
 } from "ionicons/icons";
 import { getChat, sendMessage, updatedChat } from "../../../services/chat";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -138,7 +139,11 @@ const Chat: React.FC = () => {
               <>
                 <IonItem>
                   <IonAvatar>
-                    <img src={data?.chat.avatar} alt="" />
+                    {!data?.chat.avatar ? (
+                      <IonIcon size={"large"} icon={people}></IonIcon>
+                    ) : (
+                      <img src={data?.chat.avatar} alt="" />
+                    )}
                   </IonAvatar>
                   <IonTitle>{data?.chat.name}</IonTitle>
                 </IonItem>
@@ -192,7 +197,14 @@ const Chat: React.FC = () => {
           </IonButton>
         </IonItem>
       </IonContent>
-      <Modal isOpen={openMembers} onClose={setOpenMembers} title="Members">
+      <Modal
+        isOpen={openMembers}
+        onClose={setOpenMembers}
+        title="Members"
+        closeModal={() => {
+          setOpenMembers(false);
+        }}
+      >
         <ChatOptions></ChatOptions>
 
         {data?.chat.members.map((member: any, index: any) => {

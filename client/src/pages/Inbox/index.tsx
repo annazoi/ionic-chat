@@ -19,10 +19,10 @@ import {
 import { authStore } from "../../store/auth";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { create, globe, logOut, settings, sync } from "ionicons/icons";
+import { create, globe, logOut, people, settings, sync } from "ionicons/icons";
 import { getChats } from "../../services/chat";
 import React from "react";
-import Users from "../../components/Users";
+import Users from "./CreateChat";
 import Modal from "./Modal";
 import Settings from "./Settings";
 import Loading from "../../components/Loading";
@@ -37,7 +37,7 @@ const Inbox: React.FC = () => {
     username: usernameStore,
   } = authStore((store: any) => store);
 
-  const [openSearch, setOpenSearch] = useState<boolean>(false);
+  const [openCreateChat, setOpenCreateChat] = useState<boolean>(false);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
 
   const { socket } = useSocket();
@@ -46,9 +46,6 @@ const Inbox: React.FC = () => {
     queryKey: ["chats"],
     queryFn: getChats,
     refetchOnMount: "always",
-    onSuccess: (res: any) => {
-      console.log("chats", res.chats);
-    },
   });
 
   const joinRoom = (chatId: string) => {
@@ -146,12 +143,15 @@ const Inbox: React.FC = () => {
                       routerLink={`/chat/${chat._id}`}
                       onClick={() => {
                         joinRoom(chat._id);
-                        console.log("selected chat", chat);
                       }}
                     >
                       <IonItem lines="none">
                         <IonAvatar slot="start">
-                          <IonImg src={chat.avatar} />
+                          {!chat.avatar ? (
+                            <IonIcon size={"large"} icon={people}></IonIcon>
+                          ) : (
+                            <IonImg src={chat.avatar} />
+                          )}
                         </IonAvatar>
                         <IonLabel>{chat.name}</IonLabel>
                         <IonIcon icon={arrowForward}></IonIcon>
@@ -169,21 +169,35 @@ const Inbox: React.FC = () => {
             icon={create}
             size="large"
             onClick={() => {
-              setOpenSearch(true);
+              setOpenCreateChat(true);
             }}
           ></IonIcon>
         </IonFab>
       </IonContent>
 
-      <Modal isOpen={openSearch} onClose={setOpenSearch} title="New Message">
+      <Modal
+        isOpen={openCreateChat}
+        onClose={setOpenCreateChat}
+        title="New Message"
+        closeModal={() => {
+          setOpenCreateChat(false);
+        }}
+      >
         <Users
           closeModal={() => {
-            setOpenSearch(false);
+            setOpenCreateChat(false);
           }}
         />
       </Modal>
 
-      <Modal isOpen={openSettings} onClose={setOpenSettings} title="Settings">
+      <Modal
+        isOpen={openSettings}
+        onClose={setOpenSettings}
+        title="Settings"
+        closeModal={() => {
+          setOpenSettings(false);
+        }}
+      >
         <Settings />
       </Modal>
     </IonPage>

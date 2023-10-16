@@ -59,8 +59,8 @@ const register = async (req, res, next) => {
         userId: createdUser.id,
         username: createdUser.username,
       },
-      process.env.JWT_SECRET,
-      { expiresIn: "" }
+      process.env.JWT_SECRET
+      // { expiresIn: "" }
     );
     res
       .status(201)
