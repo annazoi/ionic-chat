@@ -78,7 +78,11 @@ const Inbox: React.FC = () => {
       </IonHeader>
       <IonFab slot="fixed" horizontal="end" edge={true}>
         <IonFabButton size="small">
-          <img src={avatar} alt="" style={{ borderRadius: "50px" }}></img>
+          <img
+            src={avatar}
+            alt=""
+            style={{ width: "100%", height: "100%", borderRadius: "50%" }}
+          ></img>
         </IonFabButton>
         <IonFabList side="bottom">
           <IonFabButton
@@ -98,7 +102,6 @@ const Inbox: React.FC = () => {
         </IonFabList>
       </IonFab>
       <IonContent>
-        {isLoading && <Loading showLoading={isLoading} />}
         {data?.chats?.length === 0 ? (
           <IonCard>
             <IonItem>
@@ -109,6 +112,7 @@ const Inbox: React.FC = () => {
           </IonCard>
         ) : (
           <>
+            <Loading showLoading={isLoading} />
             {data?.chats?.map((chat: any, index: any) => {
               return (
                 <div key={index}>

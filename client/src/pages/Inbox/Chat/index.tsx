@@ -3,6 +3,7 @@ import {
   IonBackButton,
   IonButton,
   IonButtons,
+  IonCard,
   IonContent,
   IonFab,
   IonFabButton,
@@ -206,19 +207,6 @@ const Chat: React.FC = () => {
         }}
       >
         <ChatOptions></ChatOptions>
-
-        {data?.chat.members.map((member: any, index: any) => {
-          return (
-            <div key={index} id={index}>
-              <IonItem>
-                <IonAvatar>
-                  <img src={member.avatar} alt="" />
-                </IonAvatar>
-                <IonTitle>{member.username}</IonTitle>
-              </IonItem>
-            </div>
-          );
-        })}
       </Modal>
     </IonPage>
   );

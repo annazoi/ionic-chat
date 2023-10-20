@@ -14,7 +14,7 @@ interface ModalProps {
   title: string;
   onClose: any;
   children?: any;
-  closeModal: any;
+  closeModal?: any;
 }
 
 const Modal: React.FC<ModalProps> = ({

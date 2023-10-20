@@ -49,10 +49,6 @@ const Chat = ({ username, room, socket }: any) => {
     }
   };
 
-  // if (isSuccess) {
-  //   console.log("data", data);
-  // }
-
   return (
     <div>
       <div>

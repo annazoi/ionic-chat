@@ -19,6 +19,7 @@ const Settings: React.FC = () => {
           style={{
             borderRadius: "50%",
             width: "20%",
+            height: "20%",
             border: "black 2px solid",
           }}
         ></img>

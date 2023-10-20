@@ -1,11 +1,9 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getUsers } from "../../../services/users";
+import { useMutation } from "@tanstack/react-query";
 
 import {
   IonCard,
   IonCardContent,
   IonContent,
-  IonSearchbar,
   IonAvatar,
   IonItem,
   IonLabel,
@@ -15,10 +13,11 @@ import {
   IonIcon,
 } from "@ionic/react";
 import { chatbubblesOutline } from "ionicons/icons";
-import React from "react";
+import React, { useState } from "react";
 import { authStore } from "../../../store/auth";
 import { createChat } from "../../../services/chat";
 import Group from "./Group";
+import SearchUsers from "../../../components/SearchUsers";
 
 interface UsersProps {
   closeModal: any;
@@ -27,12 +26,8 @@ interface UsersProps {
 const CreateChat: React.FC<UsersProps> = ({ closeModal }) => {
   const { userId, isLoggedIn, username } = authStore((store: any) => store);
 
-  const { data } = useQuery({
-    queryKey: ["users"],
-    queryFn: () => getUsers(),
-  });
-
   const [openGroupModal, setOpenGroupModal] = React.useState<boolean>(false);
+  const [filteredUser, setFilteredUser] = useState([]);
 
   const router = useIonRouter();
 
@@ -42,8 +37,6 @@ const CreateChat: React.FC<UsersProps> = ({ closeModal }) => {
   });
 
   const createPrivateChat = (index: number, memberId: string) => {
-    // let name = data.users[index].username + "-" + username;
-    // let avatar = data.users[index].avatar;
     mutate(
       { type: "private", members: [userId, memberId] },
       {
@@ -65,7 +58,10 @@ const CreateChat: React.FC<UsersProps> = ({ closeModal }) => {
         {isLoggedIn && (
           <>
             <IonCardContent>
-              <IonSearchbar></IonSearchbar>
+              <SearchUsers
+                setFilteredUser={setFilteredUser}
+                placeholder="Search for users"
+              />
               <IonButton
                 style={{ marginLeft: "8px" }}
                 onClick={() => {
@@ -74,7 +70,7 @@ const CreateChat: React.FC<UsersProps> = ({ closeModal }) => {
               >
                 Create a Group
               </IonButton>
-              {data?.users.map((user: any, index: number) => (
+              {filteredUser.map((user: any, index: number) => (
                 <IonCard
                   key={user._id}
                   onClick={() => {
