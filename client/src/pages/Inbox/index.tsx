@@ -18,7 +18,7 @@ import {
 } from "@ionic/react";
 import { authStore } from "../../store/auth";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { create, globe, logOut, people, settings, sync } from "ionicons/icons";
 import { getChats } from "../../services/chat";
 import React from "react";
@@ -30,12 +30,9 @@ import { arrowForward } from "ionicons/icons";
 import { useSocket } from "../../hooks/sockets";
 
 const Inbox: React.FC = () => {
-  const {
-    logOutUser,
-    avatar,
-    userId,
-    username: usernameStore,
-  } = authStore((store: any) => store);
+  const { logOutUser, avatar, userId, username } = authStore(
+    (store: any) => store
+  );
 
   const [openCreateChat, setOpenCreateChat] = useState<boolean>(false);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
@@ -60,11 +57,17 @@ const Inbox: React.FC = () => {
     window.location.reload();
   };
 
+  useEffect(() => {
+    socket?.on("new_message", (data: any) => {
+      console.log("new message", data);
+    });
+  }, [socket]);
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>{usernameStore}'s inbox</IonTitle>
+          <IonTitle>{username}'s inbox</IonTitle>
           <IonButtons slot="start">
             <IonButton
               onClick={() => {

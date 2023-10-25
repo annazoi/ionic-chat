@@ -3,7 +3,6 @@ import {
   IonBackButton,
   IonButton,
   IonButtons,
-  IonCard,
   IonContent,
   IonFab,
   IonFabButton,
@@ -15,21 +14,20 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonRouter,
 } from "@ionic/react";
 import {
   arrowBack,
   send,
-  sync,
   peopleOutline,
   informationOutline,
   imagesOutline,
   people,
+  ellipsisHorizontalOutline,
 } from "ionicons/icons";
-import { getChat, sendMessage, updatedChat } from "../../../services/chat";
+import { getChat, sendMessage } from "../../../services/chat";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Loading from "../../../components/Loading";
 import { authStore } from "../../../store/auth";
 import { useSocket } from "../../../hooks/sockets";
@@ -51,6 +49,7 @@ const Chat: React.FC = () => {
   const { data, isLoading } = useQuery<any>({
     queryKey: ["chat"],
     refetchOnMount: "always",
+    refetchIntervalInBackground: true,
     queryFn: () => getChat(chatId),
     onSuccess: (res: any) => {
       console.log("chat query", res.chat.messages);
@@ -192,9 +191,12 @@ const Chat: React.FC = () => {
               setNewMessage(event.target.value);
             }}
           />
-          <Loading showLoading={messageIsLoading} />
           <IonButton onClick={sendNewMessage} expand="block" fill="clear">
-            <IonIcon icon={send}></IonIcon>
+            {messageIsLoading ? (
+              <IonIcon icon={ellipsisHorizontalOutline}></IonIcon>
+            ) : (
+              <IonIcon icon={send}></IonIcon>
+            )}
           </IonButton>
         </IonItem>
       </IonContent>
@@ -206,7 +208,11 @@ const Chat: React.FC = () => {
           setOpenMembers(false);
         }}
       >
-        <ChatOptions></ChatOptions>
+        <ChatOptions
+          closeModal={() => {
+            setOpenMembers(false);
+          }}
+        ></ChatOptions>
       </Modal>
     </IonPage>
   );

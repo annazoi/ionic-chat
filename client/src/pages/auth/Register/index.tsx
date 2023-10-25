@@ -60,7 +60,7 @@ const Register: React.FC = () => {
 
   const router = useIonRouter();
 
-  const onSubmit = (data: RegisterConfig) => {
+  const onSubmit = async (data: any) => {
     console.log(data);
     console.log("dat", data);
     try {
@@ -75,8 +75,8 @@ const Register: React.FC = () => {
           });
           setMessage("Form submitted successfully!");
           setShowToast(true);
-          router.push("/inbox");
-          window.location.reload();
+          router.push("/inbox", "forward", "replace");
+          // window.location.reload();
         },
         onError: (error) => {
           console.log("Could not create user", error);
@@ -105,7 +105,7 @@ const Register: React.FC = () => {
           <IonCol size="12" sizeMd="8" sizeLg="6" sizeXl="4">
             <IonCard>
               <IonCardContent>
-                {isLoading && <Loading showLoading={isLoading} />}
+                <Loading showLoading={isLoading} />
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <IonInput
                     fill="outline"
@@ -143,10 +143,10 @@ const Register: React.FC = () => {
                   <ImagePicker onChange={handleImage}></ImagePicker>
 
                   <IonButton
-                    id="open-toast"
                     type="submit"
                     className="ion-margin-top"
                     expand="block"
+                    disabled={isLoading}
                   >
                     Register
                   </IonButton>

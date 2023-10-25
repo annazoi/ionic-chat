@@ -4,16 +4,11 @@ import {
   IonCardContent,
   IonCheckbox,
   IonContent,
-  IonHeader,
-  IonIcon,
   IonImg,
   IonInput,
   IonItem,
   IonLabel,
-  IonPage,
   IonSearchbar,
-  IonTitle,
-  IonToolbar,
   useIonRouter,
 } from "@ionic/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -23,7 +18,6 @@ import { createChat } from "../../../../services/chat";
 import { authStore } from "../../../../store/auth";
 import ConfirmModal from "../../../../components/ConfirmModal";
 import ImagePicker from "../../../../components/ImagePicker";
-import { people } from "ionicons/icons";
 interface GroupProps {
   closeModal: any;
   setOpenGroupModal: any;
@@ -57,8 +51,6 @@ const Group: React.FC<GroupProps> = ({
 
   const createGroupChat = () => {
     if (selectedUsers.length > 1 && name !== "") {
-      // let avatar =
-      //   "https://e7.pngegg.com/pngimages/367/168/png-clipart-computer-icons-business-symbol-consulting-firm-organization-complimentary-business-area.png";
       let members = selectedUsers;
       mutate(
         { name, type: "group", avatar, members: [...members, userId] },

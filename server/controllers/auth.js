@@ -62,9 +62,12 @@ const register = async (req, res, next) => {
       process.env.JWT_SECRET
       // { expiresIn: "" }
     );
-    res
-      .status(201)
-      .json({ userId: createdUser.id, token: token, avatar: result.url });
+    res.status(201).json({
+      userId: createdUser.id,
+      token: token,
+      avatar: result.url,
+      username: createdUser.username,
+    });
   } catch (err) {
     console.log(err);
     return res.status(400).send({ message: "Could not create user" });

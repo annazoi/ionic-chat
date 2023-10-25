@@ -28,8 +28,8 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import Login from "./pages/auth/login/Login";
-import Register from "./pages/auth/register/Register";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 import { homeOutline, chatbubblesOutline, cameraOutline } from "ionicons/icons";
 import Inbox from "./pages/Inbox/index";
 import Menu from "./pages/menu/Menu";
